@@ -1,5 +1,7 @@
 # Spanish Tutor — SPAN 1A (¡Naveguemos juntos!)
 
+**Live web app (no install needed):** https://apparnar.github.io/spanish-tutor/
+
 An interactive Spanish tutor skill for Claude Code (free desktop app). Covers all 5 modules of SPAN 1A: vocabulary, grammar, verb conjugations, conversation practice, and exam prep.
 
 ## What it does
@@ -25,10 +27,8 @@ Covers Módulos 1–5: greetings, university, family, hobbies, shopping — plus
 Open Terminal and run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/spanish-tutor/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/apparnar/spanish-tutor/main/install.sh | bash
 ```
-
-*(Replace YOUR_USERNAME with your GitHub username after publishing)*
 
 Or if you downloaded the repo:
 
