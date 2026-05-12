@@ -132,6 +132,8 @@
   .topic-list { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
   .topic-btn { background: #f8f9fa; border: 2px solid var(--light); border-radius: 10px; padding: .85rem; cursor: pointer; font-size: .9rem; text-align: left; transition: all .2s; }
   .topic-btn:hover { border-color: var(--blue); background: #eaf4fb; }
+  .grammar-quiz-btn { display:block; width:100%; margin-top:1.2rem; padding:1rem; background:linear-gradient(135deg,var(--blue) 0%,#1a5276 100%); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:800; cursor:pointer; transition:opacity .2s; box-shadow:0 3px 10px rgba(41,128,185,.35); }
+  .grammar-quiz-btn:hover { opacity:.9; }
 
   /* NAV */
   .back-btn { background: none; border: none; color: var(--red); font-size: .9rem; font-weight: 700; cursor: pointer; padding: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: .4rem; }
@@ -637,6 +639,46 @@ const preteritoQuestions = [
   {type:'fill', label:'Pretérito', prompt:'Tú ___ mucho dinero ayer. (gastar — fill in preterite form)', answer:'gastaste'},
   {type:'fill', label:'Pretérito', prompt:'Ella ___ una falda nueva. (comprar — fill in preterite form)', answer:'compró'},
 ];
+
+// ─── GRAMMAR TOPIC QUIZ BANKS ────────────────────────────────────────────────
+const grammarQuizBanks = {
+  demostrativos: [
+    {type:'multiple', label:'Demonstrative Adjectives', prompt:'Which demonstrative means <b>"this"</b> (masculine singular)?', choices:['ese','aquel','este','estos'], answer:'este'},
+    {type:'multiple', label:'Demonstrative Adjectives', prompt:'Which demonstrative means <b>"that"</b> (feminine singular, nearby)?', choices:['esa','aquella','esta','esas'], answer:'esa'},
+    {type:'multiple', label:'Demonstrative Adjectives', prompt:'Which demonstrative means <b>"that over there"</b> (masculine singular)?', choices:['ese','este','aquel','estos'], answer:'aquel'},
+    {type:'multiple', label:'Demonstrative Adjectives', prompt:'Choose the correct form: ___ libros (these)', choices:['este','esta','estos','esos'], answer:'estos'},
+    {type:'multiple', label:'Demonstrative Adjectives', prompt:'Choose the correct form: ___ casas (those, far away)', choices:['aquellas','aquella','esas','esa'], answer:'aquellas'},
+    {type:'multiple', label:'Demonstrative Adjectives', prompt:'Choose the correct form: ___ estudiante (that, feminine, nearby)', choices:['ese','esa','aquella','esta'], answer:'esa'},
+    {type:'fill', label:'Demonstrative Adjectives', prompt:'Fill in: ___ zapatos son bonitos. (these shoes)', answer:'estos'},
+    {type:'fill', label:'Demonstrative Adjectives', prompt:'Fill in: ___ tienda tiene rebajas. (that store, nearby)', answer:'esa'},
+    {type:'fill', label:'Demonstrative Adjectives', prompt:'Fill in: ___ montañas son altas. (those mountains, far away)', answer:'aquellas'},
+    {type:'multiple', label:'Demonstrative Adjectives', prompt:'"Esas camisas" translates to…', choices:['this shirt','those shirts','these shirts','that shirt'], answer:'those shirts'},
+  ],
+  obj_directo: [
+    {type:'multiple', label:'Direct Object Pronouns', prompt:'Which pronoun replaces a <b>masculine singular</b> direct object?', choices:['la','le','lo','los'], answer:'lo'},
+    {type:'multiple', label:'Direct Object Pronouns', prompt:'Which pronoun replaces a <b>feminine plural</b> direct object?', choices:['la','los','les','las'], answer:'las'},
+    {type:'multiple', label:'Direct Object Pronouns', prompt:'Replace the direct object: "Ella compra <b>la falda</b>."', choices:['Ella lo compra.','Ella la compra.','Ella le compra.','Ella las compra.'], answer:'Ella la compra.'},
+    {type:'multiple', label:'Direct Object Pronouns', prompt:'Replace the direct object: "Yo veo <b>los libros</b>."', choices:['Yo los veo.','Yo les veo.','Yo lo veo.','Yo las veo.'], answer:'Yo los veo.'},
+    {type:'multiple', label:'Direct Object Pronouns', prompt:'Where does the direct object pronoun go with a <b>conjugated verb</b>?', choices:['after the verb','before the verb','at the end of the sentence','it doesn\'t matter'], answer:'before the verb'},
+    {type:'multiple', label:'Direct Object Pronouns', prompt:'Replace: "¿Tienes <b>el boleto</b>?" → "¿___ tienes?"', choices:['le','lo','la','los'], answer:'lo'},
+    {type:'fill', label:'Direct Object Pronouns', prompt:'"Yo compro <b>las manzanas</b>." → "Yo ___ compro."', answer:'las'},
+    {type:'fill', label:'Direct Object Pronouns', prompt:'"Ella escucha <b>la música</b>." → "Ella ___ escucha."', answer:'la'},
+    {type:'fill', label:'Direct Object Pronouns', prompt:'"Nosotros vemos <b>los videos</b>." → "Nosotros ___ vemos."', answer:'los'},
+    {type:'multiple', label:'Direct Object Pronouns', prompt:'Which question do you ask to find the direct object?', choices:['¿A quién? / ¿Qué?','¿Para quién?','¿Dónde?','¿Cuándo?'], answer:'¿A quién? / ¿Qué?'},
+  ],
+  obj_indirecto: [
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'Which pronoun means <b>"to/for me"</b>?', choices:['te','le','me','nos'], answer:'me'},
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'Which pronoun means <b>"to/for them / you all"</b>?', choices:['les','los','le','nos'], answer:'les'},
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'Replace: "Ella da <b>a mí</b> el regalo." → "Ella ___ da el regalo."', choices:['le','me','te','nos'], answer:'me'},
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'Replace: "Yo explico <b>a ellos</b> la lección." → "Yo ___ explico la lección."', choices:['los','les','le','nos'], answer:'les'},
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'Which question do you ask to find the indirect object?', choices:['¿Qué?','¿A quién? / ¿Para quién?','¿Cómo?','¿Cuándo?'], answer:'¿A quién? / ¿Para quién?'},
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'When both direct AND indirect pronouns appear, the indirect comes…', choices:['after the direct','before the direct','at the end','doesn\'t matter'], answer:'before the direct'},
+    {type:'fill', label:'Indirect Object Pronouns', prompt:'"Ella compra flores <b>para nosotros</b>." → "Ella ___ compra flores."', answer:'nos'},
+    {type:'fill', label:'Indirect Object Pronouns', prompt:'"El profesor explica <b>a ti</b> la gramática." → "El profesor ___ explica la gramática."', answer:'te'},
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'"Le lo doy" is wrong in Spanish. What is the correct form?', choices:['Se lo doy.','Lo le doy.','Les lo doy.','Lo se doy.'], answer:'Se lo doy.'},
+    {type:'multiple', label:'Indirect Object Pronouns', prompt:'In "Me lo da", what does <b>lo</b> replace?', choices:['the indirect object','the subject','the direct object','the verb'], answer:'the direct object'},
+  ],
+};
 
 // ─── FINAL EXAM QUESTION BANK (based on teacher's model test) ────────────────
 const finalExamQuestions = [
@@ -1517,11 +1559,38 @@ function startGrammar() {
   });
   document.getElementById('grammarContent').style.display = 'none';
 }
+const QUIZ_TOPIC_IDS = ['demostrativos', 'obj_directo', 'obj_indirecto', 'preterito'];
+const QUIZ_TOPIC_LABELS = {
+  demostrativos: 'Demonstrative Adjectives',
+  obj_directo: 'Direct Object Pronouns',
+  obj_indirecto: 'Indirect Object Pronouns',
+  preterito: 'Preterite Conjugation',
+};
 function showGrammarTopic(t) {
   const content = document.getElementById('grammarContent');
   content.style.display = 'block';
   content.innerHTML = t.html;
+  if (QUIZ_TOPIC_IDS.includes(t.id)) {
+    const btn = document.createElement('button');
+    btn.className = 'grammar-quiz-btn';
+    btn.textContent = `✏️ Practice Quiz — ${QUIZ_TOPIC_LABELS[t.id]}`;
+    btn.onclick = () => startGrammarQuiz(t.id);
+    content.appendChild(btn);
+  }
   content.scrollIntoView({ behavior: 'smooth' });
+}
+function startGrammarQuiz(topicId) {
+  let bank;
+  if (topicId === 'preterito') {
+    bank = shuffle([...preteritoQuestions]).slice(0, 10);
+  } else {
+    bank = shuffle([...(grammarQuizBanks[topicId] || [])]);
+  }
+  sessionMode = 'grammarQuiz';
+  examQuestions = bank;
+  examIndex = 0; examCorrect = 0; examWrong = 0;
+  showScreen('exam');
+  showQuestion();
 }
 
 // ─── RESULTS ─────────────────────────────────────────────────────────────────
