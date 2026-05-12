@@ -774,9 +774,15 @@ function startFlash() {
 function startWeakFlash() {
   const weak = getWeakWords();
   if (weak.length === 0) { goHome(); return; }
-  // Repeat weak words to fill a deck of 15
+  // Each weak word appears at most 3× so one word doesn't dominate the deck
   const repeated = [];
-  while (repeated.length < 15) repeated.push(...weak);
+  weak.forEach(w => { for (let i = 0; i < 3; i++) repeated.push(w); });
+  // Pad remaining slots with random non-weak vocab
+  if (repeated.length < 15) {
+    const weakKeys = new Set(weak.map(w => w.s));
+    const extras = shuffle(Object.values(vocab).flat().filter(w => !weakKeys.has(w.s)));
+    repeated.push(...extras.slice(0, 15 - repeated.length));
+  }
   flashDeck = shuffle(repeated).slice(0, 15);
   flashIndex = 0; flashCorrect = 0; flashWrong = 0;
   showScreen('flash');
@@ -1213,12 +1219,27 @@ function normVoice(s) {
     .replace(/[¿¡.,;:!?]/g,'').replace(/\s+/g,' ').trim();
 }
 
+function expandExpected(raw) {
+  // "el/la sobrino/a" → ["el sobrino", "la sobrina", "sobrino", "sobrina"]
+  // "nephew / niece"  → ["nephew", "niece"]
+  // "Hello; Hi"       → ["hello", "hi"]
+  const base = normVoice(raw);
+
+  // Handle Spanish gender slash patterns: el/la X/a → expand both forms + bare stem
+  const spanishSlash = base.match(/^(el|la|los|las)?\/?(la|el|los|las)?\s*(\w+)\/(\w+)$/);
+  if (spanishSlash) {
+    const stem1 = spanishSlash[3], stem2 = spanishSlash[4];
+    return [stem1, stem2, `el ${stem1}`, `la ${stem2}`, `el ${stem2}`, `la ${stem1}`].filter(Boolean);
+  }
+
+  // General: split on ;  /  , and keep parts with length > 1 to avoid single-letter false matches
+  return base.split(/[;\/,]+/).map(p => p.trim()).filter(p => p.length > 1);
+}
+
 function checkVoiceAnswer(transcripts) {
   if (!currentCard) return;
   const expected = flashDir === 'es' ? currentCard.e : currentCard.s;
-
-  // Split expected on ; / , to allow partial match (e.g. "Hello; Hi" → match "hello" or "hi")
-  const expectedParts = normVoice(expected).split(/[;\/,]+/).map(p => p.trim()).filter(Boolean);
+  const expectedParts = expandExpected(expected);
 
   const matched = transcripts.find(t =>
     expectedParts.some(part => normVoice(t).includes(part) || part.includes(normVoice(t)))
