@@ -667,15 +667,17 @@ function showFlashCard() {
   const heardEl = document.getElementById('voiceHeard');
   heardEl.style.display = 'none';
   heardEl.innerHTML = '';
+  micBtn.style.display = 'block';
+  micBtn.classList.remove('listening');
   if (hasSpeech) {
-    micBtn.style.display = 'block';
     micBtn.textContent = '🎤 Speak Answer';
-    micBtn.classList.remove('listening');
     micBtn.disabled = false;
     document.getElementById('noSpeechNote').textContent = '';
   } else {
-    micBtn.style.display = 'none';
-    document.getElementById('noSpeechNote').textContent = 'Voice not supported — use Chrome or Edge';
+    micBtn.textContent = '🎤 Speak Answer (not available)';
+    micBtn.disabled = true;
+    micBtn.style.background = '#aaa';
+    document.getElementById('noSpeechNote').textContent = 'Voice needs Chrome, Edge, or Safari — Firefox not supported';
   }
 }
 function revealCard() {
