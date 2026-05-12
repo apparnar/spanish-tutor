@@ -139,6 +139,16 @@
   .direction-toggle button { flex: 1; border: none; border-radius: 99px; padding: .4rem; font-size: .82rem; cursor: pointer; background: transparent; transition: all .2s; }
   .direction-toggle button.active { background: #fff; font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
 
+  /* VOICE */
+  .btn-mic { display: block; width: 100%; background: #8e44ad; color: #fff; border: none; border-radius: 10px; padding: .9rem; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: .75rem; transition: background .2s; }
+  .btn-mic:hover { background: #7d3c98; }
+  .btn-mic.listening { background: var(--red); animation: pulse 1s infinite; }
+  .btn-mic:disabled { background: #ccc; cursor: default; animation: none; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.55} }
+  .voice-heard { text-align:center; font-size:.88rem; color:#555; margin-top:.75rem; padding:.6rem 1rem; background:#f0f4f8; border-radius:8px; display:none; font-style:italic; }
+  .voice-correct { color: var(--green); font-weight:700; font-size:1.1rem; }
+  .no-speech-note { text-align:center; font-size:.72rem; color:#bbb; margin-top:.35rem; }
+
   @media (max-width: 480px) {
     .module-grid { grid-template-columns: repeat(3, 1fr); }
     .mode-grid { grid-template-columns: 1fr; }
@@ -251,6 +261,9 @@
     <div class="translation" id="flashTrans"></div>
   </div>
   <button class="btn-reveal" id="revealBtn" onclick="revealCard()">Reveal Answer</button>
+  <button class="btn-mic" id="micBtn" onclick="startVoiceAnswer()">🎤 Speak Answer</button>
+  <p class="no-speech-note" id="noSpeechNote"></p>
+  <div class="voice-heard" id="voiceHeard"></div>
   <div class="answer-btns" id="answerBtns" style="display:none">
     <button class="btn-wrong" onclick="markCard(false)">✗ Didn't know</button>
     <button class="btn-correct" onclick="markCard(true)">✓ Got it!</button>
@@ -649,10 +662,26 @@ function showFlashCard() {
   fc.classList.toggle('is-weak', isWeak);
   document.getElementById('revealBtn').style.display = 'block';
   document.getElementById('answerBtns').style.display = 'none';
+  // Voice UI reset
+  const micBtn = document.getElementById('micBtn');
+  const heardEl = document.getElementById('voiceHeard');
+  heardEl.style.display = 'none';
+  heardEl.innerHTML = '';
+  if (hasSpeech) {
+    micBtn.style.display = 'block';
+    micBtn.textContent = '🎤 Speak Answer';
+    micBtn.classList.remove('listening');
+    micBtn.disabled = false;
+    document.getElementById('noSpeechNote').textContent = '';
+  } else {
+    micBtn.style.display = 'none';
+    document.getElementById('noSpeechNote').textContent = 'Voice not supported — use Chrome or Edge';
+  }
 }
 function revealCard() {
   document.getElementById('flashCard').classList.add('revealed');
   document.getElementById('revealBtn').style.display = 'none';
+  document.getElementById('micBtn').style.display = 'none';
   document.getElementById('answerBtns').style.display = 'grid';
 }
 function markCard(correct) {
@@ -868,6 +897,96 @@ function showResults(correct, total) {
   document.getElementById('resultMsg').textContent = msg;
 }
 function retrySession() { startSession(); }
+
+// ─── SPEECH ──────────────────────────────────────────────────────────────────
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const hasSpeech = !!SpeechRecognition;
+
+function speakText(text, lang = 'es-ES') {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = lang;
+  utt.rate = 0.88;
+  utt.pitch = 1.05;
+  window.speechSynthesis.speak(utt);
+}
+
+function startVoiceAnswer() {
+  if (!hasSpeech) return;
+  const micBtn = document.getElementById('micBtn');
+  const recognition = new SpeechRecognition();
+  // answer lang: if card shows Spanish, student answers in English, and vice versa
+  recognition.lang = flashDir === 'es' ? 'en-US' : 'es-ES';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 5;
+
+  micBtn.textContent = '🔴 Listening… (speak now)';
+  micBtn.classList.add('listening');
+  micBtn.disabled = true;
+  document.getElementById('revealBtn').style.display = 'none';
+
+  recognition.onresult = (event) => {
+    const transcripts = Array.from(event.results[0]).map(r => r.transcript);
+    checkVoiceAnswer(transcripts);
+  };
+  recognition.onerror = (e) => {
+    resetMicBtn();
+    if (e.error !== 'no-speech' && e.error !== 'aborted') {
+      speakText('Lo siento, no te escuché. ¡Inténtalo de nuevo!', 'es-ES');
+    }
+  };
+  recognition.onend = () => resetMicBtn();
+  recognition.start();
+}
+
+function resetMicBtn() {
+  const micBtn = document.getElementById('micBtn');
+  micBtn.textContent = '🎤 Speak Answer';
+  micBtn.classList.remove('listening');
+  micBtn.disabled = false;
+}
+
+function normVoice(s) {
+  return s.trim().toLowerCase()
+    .replace(/[áàâä]/g,'a').replace(/[éèêë]/g,'e').replace(/[íìîï]/g,'i')
+    .replace(/[óòôö]/g,'o').replace(/[úùûü]/g,'u').replace(/ñ/g,'n')
+    .replace(/[¿¡.,;:!?]/g,'').replace(/\s+/g,' ').trim();
+}
+
+function checkVoiceAnswer(transcripts) {
+  if (!currentCard) return;
+  const expected = flashDir === 'es' ? currentCard.e : currentCard.s;
+
+  // Split expected on ; / , to allow partial match (e.g. "Hello; Hi" → match "hello" or "hi")
+  const expectedParts = normVoice(expected).split(/[;\/,]+/).map(p => p.trim()).filter(Boolean);
+
+  const matched = transcripts.find(t =>
+    expectedParts.some(part => normVoice(t).includes(part) || part.includes(normVoice(t)))
+  );
+
+  // Reveal card
+  document.getElementById('flashCard').classList.add('revealed');
+  document.getElementById('micBtn').style.display = 'none';
+
+  const heardEl = document.getElementById('voiceHeard');
+  heardEl.style.display = 'block';
+
+  if (matched) {
+    heardEl.innerHTML = `<span class="voice-correct">¡Correcto! 🎉</span><br><small>You said: "${matched}"</small>`;
+    speakText('¡Correcto!', 'es-ES');
+    setTimeout(() => {
+      heardEl.style.display = 'none';
+      markCard(true);
+    }, 2000);
+  } else {
+    const heard = transcripts[0] || '…';
+    heardEl.innerHTML = `You said: "<b>${heard}</b>"<br><small>The answer is: <b>${expected}</b></small>`;
+    speakText(`No exactamente. La respuesta es: ${expected}`, 'es-ES');
+    // Show manual override buttons so student can self-judge
+    document.getElementById('answerBtns').style.display = 'grid';
+  }
+}
 
 // ─── UTILS ───────────────────────────────────────────────────────────────────
 function shuffle(arr) {
