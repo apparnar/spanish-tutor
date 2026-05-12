@@ -149,6 +149,12 @@
   .voice-correct { color: var(--green); font-weight:700; font-size:1.1rem; }
   .no-speech-note { text-align:center; font-size:.72rem; color:#bbb; margin-top:.35rem; }
 
+  /* MODEL TEST BUTTONS */
+  .model-tests-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:.5rem; margin-top:.6rem; }
+  .model-test-btn { background:var(--card-bg); border:2px solid var(--gold); border-radius:10px; padding:.65rem .3rem; cursor:pointer; font-size:.82rem; color:var(--dark); text-align:center; transition:all .2s; line-height:1.3; }
+  .model-test-btn:hover { background:#fef9e7; border-color:#e67e22; }
+  .model-test-btn b { font-size:1.1rem; display:block; color:var(--red); }
+
   @media (max-width: 480px) {
     .module-grid { grid-template-columns: repeat(3, 1fr); }
     .mode-grid { grid-template-columns: 1fr; }
@@ -248,6 +254,18 @@
     </div>
   </div>
   <button class="start-btn" id="startBtn" onclick="startSession()" disabled>Choose a module and mode to start</button>
+
+  <div style="margin-top:1rem;border-top:2px solid var(--light);padding-top:.85rem">
+    <p style="font-weight:700;margin-bottom:.2rem">📋 Model Practice Tests</p>
+    <p style="font-size:.78rem;color:#888;margin-bottom:.6rem">Your teacher's format · past tense included · no vosotros · ~30 questions each</p>
+    <div class="model-tests-grid">
+      <button class="model-test-btn" onclick="launchModelTest(1)">Test<b>1</b>University</button>
+      <button class="model-test-btn" onclick="launchModelTest(2)">Test<b>2</b>Travel</button>
+      <button class="model-test-btn" onclick="launchModelTest(3)">Test<b>3</b>Shopping</button>
+      <button class="model-test-btn" onclick="launchModelTest(4)">Test<b>4</b>Family</button>
+      <button class="model-test-btn" onclick="launchModelTest(5)">Test<b>5</b>Hard Mix</button>
+    </div>
+  </div>
 </div>
 
 <!-- FLASHCARDS -->
@@ -618,6 +636,251 @@ const finalExamQuestions = [
    prompt:'¿Cuál es tu número de teléfono? (spell out the numbers!)',
    model:'Mi número es el <b>[spell each digit]</b>.<br>Ej: cuatro-uno-cinco… (415…)'},
 ];
+
+// ─── MODEL TESTS (5 sets — teacher's format, past tense, no vosotros) ────────
+const modelTests = [
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEST 1 — University Life & General Review
+// ══════════════════════════════════════════════════════════════════════════════
+[
+  // Present Progressive
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Juan y Ana estudian en la biblioteca.</b>',pronoun:'Juan y Ana',context:'en la biblioteca',answer1:'están',answer2:'estudiando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Yo busco mis apuntes para la clase.</b>',pronoun:'Yo',context:'mis apuntes para la clase',answer1:'estoy',answer2:'buscando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Nosotros aprendemos vocabulario nuevo.</b>',pronoun:'Nosotros',context:'vocabulario nuevo',answer1:'estamos',answer2:'aprendiendo'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Tú comes en la cafetería.</b>',pronoun:'Tú',context:'en la cafetería',answer1:'estás',answer2:'comiendo'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Ella escribe un correo electrónico.</b>',pronoun:'Ella',context:'un correo electrónico',answer1:'está',answer2:'escribiendo'},
+  // Vocabulary
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"luggage"</b>',choices:['el pasaporte','el equipaje','la maleta','la mochila'],answer:'el equipaje'},
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"to sunbathe"</b>',choices:['nadar','bucear','tomar el sol','escalar montañas'],answer:'tomar el sol'},
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"departure / exit"</b>',choices:['la llegada','la entrada','el pasaje','la salida'],answer:'la salida'},
+  {type:'fill',label:'Vocabulario',prompt:'Translate: <b>"to take a trip"</b>',answer:'hacer un viaje'},
+  {type:'fill',label:'Vocabulario',prompt:'Translate: <b>"passport"</b>',answer:'el pasaporte'},
+  // Saber vs. Conocer
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Yo ___ hablar español muy bien. (saber)',answer:'sé'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'¿___ tú al señor García? (conocer)',answer:'Conoces'},
+  {type:'multiple',label:'Saber vs. Conocer',prompt:'Nosotros ___ que el examen es el lunes. (saber)',choices:['conocemos','conoce','sabemos','sabe'],answer:'sabemos'},
+  // -AR Conjugation
+  {type:'fill',label:'Conjugación -AR',prompt:'Ella ___ al trabajo todos los días. (caminar)',answer:'camina'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Ustedes ___ música en el carro. (escuchar)',answer:'escuchan'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Yo ___ tarde hoy. (llegar)',answer:'llego'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Nosotros ___ la tarea juntos. (preparar)',answer:'preparamos'},
+  // -ER/-IR Conjugation
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Yo ___ cinco kilómetros cada mañana. (correr)',answer:'corro'},
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Tú ___ la lección muy bien, ¿verdad? (comprender)',answer:'comprendes'},
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Ellos ___ un apartamento cerca del campus. (compartir)',answer:'comparten'},
+  // Ser vs. Estar
+  {type:'multiple',label:'Ser vs. Estar',prompt:'El examen ___ muy difícil este semestre.',choices:['está','estamos','es','son'],answer:'es'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Nosotros ___ en la cafetería ahora mismo.',choices:['somos','son','es','estamos'],answer:'estamos'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Ella ___ muy cansada después de trabajar.',choices:['es','ser','está','son'],answer:'está'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'¿De dónde ___ ustedes?',choices:['están','estamos','somos','son'],answer:'son'},
+  // Pretérito
+  {type:'fill',label:'Pretérito',prompt:'Ayer yo ___ con mi profesora por una hora. (hablar)',answer:'hablé'},
+  {type:'fill',label:'Pretérito',prompt:'La semana pasada nosotros ___ en un restaurante italiano. (comer)',answer:'comimos'},
+  {type:'multiple',label:'Pretérito',prompt:'Ella ___ al mercado anteayer. (ir)',choices:['va','fue','iba','fui'],answer:'fue'},
+  {type:'fill',label:'Pretérito',prompt:'¿___ tú la tarea anoche? (hacer)',answer:'Hiciste'},
+  {type:'fill',label:'Pretérito',prompt:'Ellos ___ en California el año pasado. (vivir)',answer:'vivieron'},
+  // Personal Questions
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Qué hiciste ayer por la tarde?',model:'Ayer yo <b>fui</b> a… / <b>estudié</b> / <b>comí</b> con amigos / <b>trabajé</b>…<br>⚠️ Use <b>preterite</b>: hablé, comí, fui, hice, estuve…'},
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Cuántos años tienes y cuándo es tu cumpleaños?',model:'Yo <b>tengo</b> ___ años. Mi cumpleaños <b>es</b> el <b>[número] de [mes]</b>.<br>Ej: el quince de septiembre.'},
+],
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEST 2 — Travel, Weather & Hotels
+// ══════════════════════════════════════════════════════════════════════════════
+[
+  // Present Progressive
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Ellos viajan por México.</b>',pronoun:'Ellos',context:'por México',answer1:'están',answer2:'viajando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Yo hago las maletas.</b>',pronoun:'Yo',context:'las maletas',answer1:'estoy',answer2:'haciendo'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Nosotros nadamos en la piscina del hotel.</b>',pronoun:'Nosotros',context:'en la piscina del hotel',answer1:'estamos',answer2:'nadando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Tú descansas en el hotel.</b>',pronoun:'Tú',context:'en el hotel',answer1:'estás',answer2:'descansando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Ella pide información en la recepción.</b>',pronoun:'Ella',context:'información en la recepción',answer1:'está',answer2:'pidiendo'},
+  // Vocabulary
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"to go on vacation"</b>',choices:['hacer un viaje','ir de compras','estar de viaje','ir de vacaciones'],answer:'ir de vacaciones'},
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"round-trip ticket"</b>',choices:['el pasaporte','el equipaje','la llegada','el pasaje de ida y vuelta'],answer:'el pasaje de ida y vuelta'},
+  {type:'fill',label:'Vocabulario',prompt:'Translate: <b>"travel agent"</b>',answer:'agente de viajes'},
+  {type:'multiple',label:'Vocabulario',prompt:'How do you say <b>"It\'s snowing"</b>?',choices:['Hace nieve','Llueve mucho','Está nevando','Hace neblina'],answer:'Está nevando'},
+  {type:'multiple',label:'Vocabulario',prompt:'How do you say <b>"It\'s windy"</b>?',choices:['Hace sol','Está nublado','Hace fresco','Hace viento'],answer:'Hace viento'},
+  // Saber vs. Conocer
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Yo ___ cocinar muy bien. (saber)',answer:'sé'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'¿___ ustedes el hotel Marriott? (conocer)',answer:'Conocen'},
+  {type:'multiple',label:'Saber vs. Conocer',prompt:'Ella ___ que el vuelo sale a las seis.',choices:['conoce','conoces','sabes','sabe'],answer:'sabe'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Nosotros ___ bien la ciudad de México. (conocer)',answer:'conocemos'},
+  // -AR Conjugation
+  {type:'fill',label:'Conjugación -AR',prompt:'El avión ___ a las tres de la tarde. (llegar)',answer:'llega'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Ustedes ___ la reservación hoy. (confirmar)',answer:'confirman'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Nosotros ___ en la playa todo el día. (descansar)',answer:'descansamos'},
+  // -ER/-IR Conjugation
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Yo ___ muchas cartas de mi familia. (recibir)',answer:'recibo'},
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Tú ___ tu maleta en la aduana. (abrir)',answer:'abres'},
+  {type:'multiple',label:'Conjugación -ER/-IR',prompt:'Ellos ___ a casa el domingo. (volver, o→ue)',choices:['volvemos','vuelven','vuelvo','vuelvan'],answer:'vuelven'},
+  // Ser vs. Estar
+  {type:'multiple',label:'Ser vs. Estar',prompt:'La playa ___ muy bonita en el verano.',choices:['está','estoy','son','es'],answer:'es'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Nosotros ___ de vacaciones esta semana.',choices:['somos','son','es','estamos'],answer:'estamos'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'¿Dónde ___ el aeropuerto internacional?',choices:['es','somos','son','está'],answer:'está'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'El hotel ___ muy elegante y moderno.',choices:['está','estamos','son','es'],answer:'es'},
+  // Pretérito
+  {type:'fill',label:'Pretérito',prompt:'El año pasado yo ___ a Puerto Rico. (ir)',answer:'fui'},
+  {type:'fill',label:'Pretérito',prompt:'Nosotros ___ en el hotel por tres días. (estar)',answer:'estuvimos'},
+  {type:'fill',label:'Pretérito',prompt:'Ella ___ las maletas la noche anterior. (hacer)',answer:'hizo'},
+  {type:'fill',label:'Pretérito',prompt:'¿Qué ___ tú en el restaurante anoche? (comer)',answer:'comiste'},
+  {type:'fill',label:'Pretérito',prompt:'Ellos ___ al aeropuerto muy tarde. (llegar)',answer:'llegaron'},
+  // Personal Questions
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Adónde fuiste de vacaciones? ¿Qué hiciste allí?',model:'Yo <b>fui</b> a [lugar]. Allí <b>nadé / comí / visité / compré</b>…<br>⚠️ Use <b>preterite</b> for past actions!'},
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Qué tiempo hace en tu ciudad en el invierno?',model:'En el invierno <b>hace frío</b> / <b>llueve mucho</b> / <b>está nublado</b>.<br>A veces <b>nieva</b>. Rara vez <b>hace sol</b>.'},
+],
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEST 3 — Shopping, Clothing & Colors
+// ══════════════════════════════════════════════════════════════════════════════
+[
+  // Present Progressive
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>La vendedora habla con el cliente.</b>',pronoun:'La vendedora',context:'con el cliente',answer1:'está',answer2:'hablando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Yo busco una camisa azul.</b>',pronoun:'Yo',context:'una camisa azul',answer1:'estoy',answer2:'buscando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Nosotros pagamos en la caja.</b>',pronoun:'Nosotros',context:'en la caja',answer1:'estamos',answer2:'pagando'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Ellos regatean en el mercado.</b>',pronoun:'Ellos',context:'en el mercado',answer1:'están',answer2:'regateando'},
+  {type:'progressive',label:'Present Progressive',prompt:'⚠️ Irregular participle! Change to present progressive:<br><b>Tú lees las etiquetas de los precios.</b>',pronoun:'Tú',context:'las etiquetas de los precios',answer1:'estás',answer2:'leyendo'},
+  // Vocabulary
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"department store"</b>',choices:['la tienda','el mercado','la boutique','el almacén'],answer:'el almacén'},
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"credit card"</b>',choices:['la tarjeta de débito','el dinero en efectivo','la rebaja','la tarjeta de crédito'],answer:'la tarjeta de crédito'},
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"sale / discount"</b>',choices:['el precio fijo','el regalo','el descuento','la rebaja'],answer:'la rebaja'},
+  {type:'fill',label:'Vocabulario',prompt:'Translate: <b>"to bargain / haggle"</b>',answer:'regatear'},
+  {type:'fill',label:'Vocabulario',prompt:'Translate: <b>"raincoat"</b>',answer:'el impermeable'},
+  // Demonstrative Adjectives
+  {type:'multiple',label:'Adjetivos Demostrativos',prompt:'<b>___ camisa</b> — this one, near me (camisa = feminine)',choices:['este','estos','estas','esta'],answer:'esta'},
+  {type:'multiple',label:'Adjetivos Demostrativos',prompt:'<b>___ zapatos</b> — those over there, far away (zapatos = masculine plural)',choices:['ese','esos','aquel','aquellos'],answer:'aquellos'},
+  {type:'multiple',label:'Adjetivos Demostrativos',prompt:'<b>___ falda</b> — that one, medium distance (falda = feminine)',choices:['ese','aquel','esta','esa'],answer:'esa'},
+  {type:'multiple',label:'Adjetivos Demostrativos',prompt:'<b>___ pantalones</b> — these, near me (pantalones = masculine plural)',choices:['este','ese','esos','estos'],answer:'estos'},
+  // -AR Conjugation
+  {type:'fill',label:'Conjugación -AR',prompt:'Yo ___ mucho dinero en ropa cada mes. (gastar)',answer:'gasto'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Ustedes ___ con tarjeta de crédito. (pagar)',answer:'pagan'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Ella ___ una blusa roja hoy. (llevar)',answer:'lleva'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Nosotros ___ ropa para el invierno. (buscar)',answer:'buscamos'},
+  // -ER/-IR Conjugation
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Yo ___ muchos precios altos aquí. (ver — irregular yo!)',answer:'veo'},
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'La tienda ___ ropa muy cara. (vender)',answer:'vende'},
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Tú ___ comprar el vestido verde. (decidir)',answer:'decides'},
+  // Ser vs. Estar
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Este abrigo ___ muy caro — ¡no puedo comprarlo!',choices:['está','estoy','son','es'],answer:'es'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Los zapatos ___ sucios después de caminar en la lluvia.',choices:['son','es','somos','están'],answer:'están'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Ella ___ muy elegante con ese vestido negro.',choices:['es','son','somos','está'],answer:'está'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'La tienda ___ cerrada los domingos.',choices:['es','son','somos','está'],answer:'está'},
+  // Pretérito
+  {type:'fill',label:'Pretérito',prompt:'Ayer yo ___ unos zapatos nuevos en el almacén. (comprar)',answer:'compré'},
+  {type:'fill',label:'Pretérito',prompt:'Nosotros ___ mucho dinero en el centro comercial. (gastar)',answer:'gastamos'},
+  {type:'fill',label:'Pretérito',prompt:'¿Qué ___ tú a la fiesta? (llevar)',answer:'llevaste'},
+  {type:'fill',label:'Pretérito',prompt:'Ella ___ un regalo a su madre. (dar)',answer:'dio'},
+  {type:'fill',label:'Pretérito',prompt:'Ellos ___ en efectivo porque no tenían tarjeta. (pagar)',answer:'pagaron'},
+  // Personal Questions
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Qué ropa llevas hoy? Describe tu ropa y los colores.',model:'Hoy yo <b>llevo</b> [una camiseta / unos pantalones / una falda…] de color <b>[rojo/azul/negro…]</b>.<br>También <b>llevo</b> [zapatos/botas/sandalias].'},
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Adónde fuiste de compras la semana pasada? ¿Qué compraste?',model:'La semana pasada <b>fui</b> a [la tienda / el almacén].<br>Yo <b>compré</b> [ropa / zapatos] y <b>gasté</b> [mucho/poco] dinero.'},
+],
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEST 4 — Family, Descriptions & Stem-Changing Verbs
+// ══════════════════════════════════════════════════════════════════════════════
+[
+  // Present Progressive
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Mi hermana trabaja en el hospital.</b>',pronoun:'Mi hermana',context:'en el hospital',answer1:'está',answer2:'trabajando'},
+  {type:'progressive',label:'Present Progressive',prompt:'⚠️ Irregular participle (o→u)! Change to present progressive:<br><b>Yo duermo la siesta.</b>',pronoun:'Yo',context:'la siesta',answer1:'estoy',answer2:'durmiendo'},
+  {type:'progressive',label:'Present Progressive',prompt:'⚠️ Irregular participle (e→i)! Change to present progressive:<br><b>Nosotros pedimos la comida.</b>',pronoun:'Nosotros',context:'la comida',answer1:'estamos',answer2:'pidiendo'},
+  {type:'progressive',label:'Present Progressive',prompt:'Change to present progressive:<br><b>Ellos juegan al fútbol en el parque.</b>',pronoun:'Ellos',context:'al fútbol en el parque',answer1:'están',answer2:'jugando'},
+  {type:'progressive',label:'Present Progressive',prompt:'⚠️ Irregular participle! Change to present progressive:<br><b>Tú lees una novela en español.</b>',pronoun:'Tú',context:'una novela en español',answer1:'estás',answer2:'leyendo'},
+  // Vocabulary — Family & TENER expressions
+  {type:'multiple',label:'Vocabulario — Familia',prompt:'Translate: <b>"stepfather"</b>',choices:['el padrino','el cuñado','el suegro','el padrastro'],answer:'el padrastro'},
+  {type:'multiple',label:'Vocabulario — Familia',prompt:'Translate: <b>"daughter-in-law"</b>',choices:['la madrastra','la cuñada','la suegra','la nuera'],answer:'la nuera'},
+  {type:'multiple',label:'Vocabulario — TENER',prompt:'How do you say <b>"to be hungry"</b> with TENER?',choices:['tener frío','tener sed','tener sueño','tener hambre'],answer:'tener hambre'},
+  {type:'fill',label:'Vocabulario — TENER',prompt:'How do you say <b>"to be in a hurry"</b> with TENER?',answer:'tener prisa'},
+  {type:'fill',label:'Vocabulario — TENER',prompt:'How do you say <b>"to be right"</b> with TENER?',answer:'tener razón'},
+  // Saber vs. Conocer
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Mi madre ___ hacer tamales perfectos. (saber)',answer:'sabe'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'¿___ tú a mis primos de Guadalajara? (conocer)',answer:'Conoces'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Nosotros ___ que la familia es lo más importante. (saber)',answer:'sabemos'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Yo no ___ bien a mis vecinos nuevos. (conocer)',answer:'conozco'},
+  // -AR Conjugation with stem-changers
+  {type:'fill',label:'Conjugación -AR (e→ie)',prompt:'Ella ___ a su familia en México muy pronto. (encontrar, o→ue)',answer:'encuentra'},
+  {type:'multiple',label:'Conjugación -AR (e→ie)',prompt:'Ustedes ___ la puerta cuando salen. (cerrar, e→ie)',choices:['cerran','cierro','cierramos','cierran'],answer:'cierran'},
+  {type:'multiple',label:'⚠️ Tricky! No stem change in NOSOTROS',prompt:'Nosotros ___ visitar a los abuelos. (pensar, e→ie) — careful: no stem change in nosotros!',choices:['piensan','piensamos','pienso','pensamos'],answer:'pensamos'},
+  {type:'fill',label:'Conjugación -AR (o→ue)',prompt:'Yo ___ a toda mi familia con mucho cariño. (recordar, o→ue)',answer:'recuerdo'},
+  // -ER/-IR including Tener/Venir
+  {type:'fill',label:'Conjugación (irregular yo)',prompt:'Yo ___ tres hermanos y una hermana. (tener — irregular yo!)',answer:'tengo'},
+  {type:'fill',label:'Conjugación (irregular yo)',prompt:'Yo ___ a la universidad en autobús. (venir — irregular yo!)',answer:'vengo'},
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Ellos ___ que la familia es todo. (creer)',answer:'creen'},
+  {type:'fill',label:'Conjugación -ER/-IR',prompt:'Tú ___ llamar a tu abuela más seguido. (deber)',answer:'debes'},
+  // Ser vs. Estar
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Mi abuela ___ muy trabajadora y simpática.',choices:['está','estoy','son','es'],answer:'es'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Mis padres ___ en México esta semana.',choices:['somos','son','es','están'],answer:'están'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'¿Cómo ___ tu hermana? (asking about personality)',choices:['estás','está','son','es'],answer:'es'},
+  {type:'multiple',label:'Ser vs. Estar',prompt:'Mi padre ___ enfermo hoy — tiene fiebre.',choices:['es','son','somos','está'],answer:'está'},
+  // Pretérito
+  {type:'fill',label:'Pretérito',prompt:'Ayer mi familia ___ junta en casa. (comer)',answer:'comió'},
+  {type:'fill',label:'Pretérito',prompt:'Mis padres ___ casados por 30 años. (estar)',answer:'estuvieron'},
+  {type:'fill',label:'Pretérito',prompt:'Yo ___ una fiesta de cumpleaños el sábado pasado. (tener)',answer:'tuve'},
+  {type:'fill',label:'Pretérito',prompt:'¿___ tú a la reunión familiar? (venir)',answer:'Viniste'},
+  {type:'fill',label:'Pretérito',prompt:'Mi hermano ___ a San Francisco el año pasado. (ir)',answer:'fue'},
+  // Personal Questions
+  {type:'selfcheck',label:'Preguntas personales',prompt:'Describe a un miembro de tu familia. ¿Cómo es físicamente y de personalidad?',model:'Mi [madre/hermano…] <b>es</b> [alto/a, delgado/a, moreno/a…].<br>Él/Ella <b>es</b> muy [simpático/a, trabajador/a, inteligente…].'},
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Qué hizo tu familia el fin de semana pasado?',model:'El fin de semana pasado mi familia <b>fue</b> a [lugar].<br>Nosotros <b>comimos / hablamos / vimos</b>… ⚠️ Use <b>preterite</b>!'},
+],
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEST 5 — Hard Mix (All Modules)
+// ══════════════════════════════════════════════════════════════════════════════
+[
+  // Present Progressive — focus on irregular participles
+  {type:'progressive',label:'Present Progressive',prompt:'⚠️ Irregular! Change to present progressive:<br><b>Ustedes siguen las instrucciones del profesor.</b>',pronoun:'Ustedes',context:'las instrucciones del profesor',answer1:'están',answer2:'siguiendo'},
+  {type:'progressive',label:'Present Progressive',prompt:'⚠️ Irregular (e→i)! Change to present progressive:<br><b>Yo repito las palabras en voz alta.</b>',pronoun:'Yo',context:'las palabras en voz alta',answer1:'estoy',answer2:'repitiendo'},
+  {type:'progressive',label:'Present Progressive',prompt:'⚠️ Irregular (o→u)! Change to present progressive:<br><b>Ella duerme más de ocho horas.</b>',pronoun:'Ella',context:'más de ocho horas',answer1:'está',answer2:'durmiendo'},
+  {type:'multiple',label:'Present Progressive',prompt:'⚠️ Irregular participle! Change to progressive:<br><b>Nosotros leemos el libro en voz alta.</b>',choices:['Nosotros estamos leendo el libro.','Nosotros son leyendo el libro.','Nosotros están leyendo el libro.','Nosotros estamos leyendo el libro.'],answer:'Nosotros estamos leyendo el libro.'},
+  {type:'multiple',label:'Present Progressive',prompt:'⚠️ Irregular participle! Change to progressive:<br><b>Tú oyes música muy alta.</b>',choices:['Tú estás oiendo música.','Tú eres oyendo música.','Tú estás oyendo música.','Tú estás oíendo música.'],answer:'Tú estás oyendo música.'},
+  // Vocabulary — harder / less common
+  {type:'fill',label:'Vocabulario — TENER',prompt:'How do you say <b>"to be successful"</b> with TENER?',answer:'tener éxito'},
+  {type:'fill',label:'Vocabulario — TENER',prompt:'How do you say <b>"to feel like doing something"</b> with TENER?',answer:'tener ganas de'},
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"open-air market"</b>',choices:['el almacén','el centro comercial','la boutique','el mercado al aire libre'],answer:'el mercado al aire libre'},
+  {type:'multiple',label:'Vocabulario',prompt:'Translate: <b>"to climb mountains"</b>',choices:['bucear','nadar','patinar','escalar montañas'],answer:'escalar montañas'},
+  {type:'multiple',label:'Vocabulario',prompt:'Which is the ordinal number for <b>"fourth"</b>?',choices:['tercero/a','quinto/a','segundo/a','cuarto/a'],answer:'cuarto/a'},
+  // Saber vs. Conocer
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Ella ___ tocar la guitarra muy bien. (saber)',answer:'sabe'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Yo ___ a casi todos los estudiantes de la clase. (conocer)',answer:'conozco'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'¿___ ustedes cuándo es el examen final? (saber)',answer:'Saben'},
+  {type:'fill',label:'Saber vs. Conocer',prompt:'Nosotros ___ Madrid muy bien después del viaje. (conocer)',answer:'conocemos'},
+  // -AR Conjugation — trickier contexts
+  {type:'fill',label:'Conjugación -AR',prompt:'La profesora ___ la gramática claramente. (explicar)',answer:'explica'},
+  {type:'fill',label:'Conjugación -AR',prompt:'¿___ tú español todos los días? (practicar)',answer:'Practicas'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Ustedes ___ todas las preguntas del examen. (contestar)',answer:'contestan'},
+  {type:'fill',label:'Conjugación -AR',prompt:'Yo ___ más práctica con el pretérito. (necesitar)',answer:'necesito'},
+  // -ER/-IR — Irregular YO forms focus
+  {type:'fill',label:'Conjugación — Irregular YO',prompt:'Yo ___ la tarea antes de cenar. (hacer — irregular yo!)',answer:'hago'},
+  {type:'fill',label:'Conjugación — Irregular YO',prompt:'Yo ___ los libros en la mochila. (poner — irregular yo!)',answer:'pongo'},
+  {type:'fill',label:'Conjugación — Irregular YO',prompt:'Yo ___ temprano los fines de semana. (salir — irregular yo!)',answer:'salgo'},
+  {type:'fill',label:'Conjugación — Irregular YO',prompt:'Yo siempre ___ la verdad. (decir — irregular yo!)',answer:'digo'},
+  // Ser vs. Estar — tricky pairs
+  {type:'multiple',label:'Ser vs. Estar (difícil)',prompt:'Los estudiantes ___ listos para el examen.<br><small>(listo con ESTAR = ready; con SER = smart)</small>',choices:['son','somos','es','están'],answer:'están'},
+  {type:'multiple',label:'Ser vs. Estar (difícil)',prompt:'Mi profesora ___ de Puerto Rico.',choices:['está','estoy','son','es'],answer:'es'},
+  {type:'multiple',label:'Ser vs. Estar (difícil)',prompt:'Esta blusa ___ de algodón.<br><small>(material/composition → use SER)</small>',choices:['está','estamos','son','es'],answer:'es'},
+  {type:'multiple',label:'Ser vs. Estar (difícil)',prompt:'Yo ___ aburrido con esta película — ¡es muy larga!',choices:['soy','es','son','estoy'],answer:'estoy'},
+  // Pretérito — hardest forms
+  {type:'fill',label:'Pretérito',prompt:'Ayer nosotros ___ un examen muy difícil. (tener)',answer:'tuvimos'},
+  {type:'fill',label:'Pretérito',prompt:'El profesor ___ muchos ejercicios la semana pasada. (dar)',answer:'dio'},
+  {type:'fill',label:'Pretérito',prompt:'Yo ___ en la biblioteca por tres horas ayer. (estar)',answer:'estuve'},
+  {type:'fill',label:'Pretérito',prompt:'¿Qué ___ ustedes el fin de semana? (hacer)',answer:'hicieron'},
+  {type:'fill',label:'Pretérito',prompt:'Mis amigos ___ al cine anoche. (ir)',answer:'fueron'},
+  // Personal Questions
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Qué estudiaste el semestre pasado? ¿Qué clases tomaste?',model:'El semestre pasado yo <b>estudié</b> [español, matemáticas…].<br>Yo <b>tomé</b> ___ clases. La más difícil <b>fue</b> [materia].'},
+  {type:'selfcheck',label:'Preguntas personales',prompt:'¿Qué haces normalmente para prepararte para los exámenes?',model:'Para prepararme, yo <b>estudio</b> todos los días.<br>Yo <b>hago</b> ejercicios, <b>repaso</b> el vocabulario y <b>practico</b> las conjugaciones en voz alta.'},
+],
+
+]; // end modelTests
+
+function launchModelTest(n) {
+  sessionModule = 0;
+  sessionMode = 'modelTest';
+  updateStreak();
+  examQuestions = [...modelTests[n - 1]]; // preserve order — no shuffle for model tests
+  examIndex = 0; examCorrect = 0; examWrong = 0;
+  showScreen('exam');
+  showQuestion();
+}
 
 // ─── STORAGE ─────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'spanishTutor_v1';
