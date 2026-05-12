@@ -468,11 +468,86 @@ const grammarTopics = [
   {
     id:"preterito",title:"Pretérito (Past Tense)",
     html:`<div class="grammar-card"><h3>El pretérito — Simple past tense</h3>
-    <table><tr><th>Pronoun</th><th>-AR (hablar)</th><th>-ER/-IR (comer)</th></tr><tr><td>yo</td><td>hablé</td><td>comí</td></tr><tr><td>tú</td><td>hablaste</td><td>comiste</td></tr><tr><td>él/ella</td><td>habló</td><td>comió</td></tr><tr><td>nosotros</td><td>hablamos</td><td>comimos</td></tr><tr><td>vosotros</td><td>hablasteis</td><td>comisteis</td></tr><tr><td>ellos/ustedes</td><td>hablaron</td><td>comieron</td></tr></table>
+    <table><tr><th>Pronoun</th><th>-AR (hablar)</th><th>-ER/-IR (comer)</th></tr><tr><td>yo</td><td>hablé</td><td>comí</td></tr><tr><td>tú</td><td>hablaste</td><td>comiste</td></tr><tr><td>él/ella</td><td>habló</td><td>comió</td></tr><tr><td>nosotros</td><td>hablamos</td><td>comimos</td></tr><tr><td>ellos/ustedes</td><td>hablaron</td><td>comieron</td></tr></table>
     <br><div class="rule">⚠️ Accent marks matter! <b>hablo</b> (present) vs <b>habló</b> (past)</div>
     <div class="example">Ayer yo <b>estudié</b> mucho. — Yesterday I studied a lot.</div>
     <div class="example">Ella <b>comió</b> pizza anoche. — She ate pizza last night.</div>
-    <br><div class="rule">Common time words: ayer, anoche, anteayer, la semana pasada, el año pasado</div></div>`
+    <br><div class="rule">Common irregular preterites: ser/ir → fui/fuiste/fue/fuimos/fueron &nbsp;|&nbsp; tener → tuve &nbsp;|&nbsp; hacer → hice/hiciste/<b>hizo</b> &nbsp;|&nbsp; estar → estuve &nbsp;|&nbsp; dar → di/diste/dio</div>
+    <br><div class="rule">Time trigger words: ayer, anoche, anteayer, la semana pasada, el año pasado, una vez, ya</div></div>`
+  },
+  {
+    id:"demostrativos",title:"Demonstrative Adjectives",
+    html:`<div class="grammar-card"><h3>Adjetivos Demostrativos — Pointing out WHICH one</h3>
+    <div class="rule">Demonstratives agree in <b>gender</b> (masc/fem) and <b>number</b> (sing/plural) with the noun they describe. Think of them as three levels of distance from the speaker.</div>
+    <table>
+      <tr><th>Distance</th><th>Masc. Sing.</th><th>Fem. Sing.</th><th>Masc. Pl.</th><th>Fem. Pl.</th><th>English</th></tr>
+      <tr><td>📍 Near (here, by me)</td><td><b>este</b></td><td><b>esta</b></td><td><b>estos</b></td><td><b>estas</b></td><td>this / these</td></tr>
+      <tr><td>📌 Medium (there, by you)</td><td><b>ese</b></td><td><b>esa</b></td><td><b>esos</b></td><td><b>esas</b></td><td>that / those</td></tr>
+      <tr><td>🔭 Far (over there)</td><td><b>aquel</b></td><td><b>aquella</b></td><td><b>aquellos</b></td><td><b>aquellas</b></td><td>that / those (far)</td></tr>
+    </table>
+    <br>
+    <div class="example"><b>Este</b> libro es interesante. — <i>This</i> book is interesting. (in my hand)</div>
+    <div class="example"><b>Esa</b> camisa es bonita. — <i>That</i> shirt is pretty. (near you)</div>
+    <div class="example"><b>Aquellos</b> zapatos son caros. — <i>Those</i> shoes (over there) are expensive.</div>
+    <div class="example"><b>Estas</b> clases son difíciles. — <i>These</i> classes are hard.</div>
+    <br>
+    <div class="rule">⚠️ Memory trick: <b>ESTE</b> = <b>E</b>xactly here (closest) · <b>ESE</b> = <b>E</b>lsewhere (medium) · <b>AQUEL</b> = <b>A</b>cross the room / far away</div>
+    <br>
+    <div class="rule">💡 Gender check: masculine nouns → este/ese/aquel &nbsp;|&nbsp; feminine nouns → esta/esa/aquella<br>
+    <b>el</b> libro → este libro &nbsp;|&nbsp; <b>la</b> camisa → esta camisa &nbsp;|&nbsp; <b>los</b> zapatos → estos zapatos &nbsp;|&nbsp; <b>las</b> clases → estas clases</div></div>`
+  },
+  {
+    id:"obj_directo",title:"Direct Object Pronouns",
+    html:`<div class="grammar-card"><h3>Pronombres de Objeto Directo — Direct Object Pronouns</h3>
+    <div class="rule">The <b>direct object</b> answers <b>"what?"</b> or <b>"whom?"</b> — it directly receives the action of the verb. Direct object pronouns REPLACE the noun so you don't repeat it.</div>
+    <table>
+      <tr><th>Person</th><th>Pronoun</th><th>Example</th><th>Translation</th></tr>
+      <tr><td>me (1st sing.)</td><td><b>me</b></td><td>María <b>me</b> llama.</td><td>María calls <b>me</b>.</td></tr>
+      <tr><td>you informal (2nd sing.)</td><td><b>te</b></td><td>Yo <b>te</b> veo mañana.</td><td>I see <b>you</b> tomorrow.</td></tr>
+      <tr><td>him / it (masc.)</td><td><b>lo</b></td><td>Yo <b>lo</b> compro.</td><td>I buy <b>it</b>. / I buy <b>him</b>.</td></tr>
+      <tr><td>her / it (fem.)</td><td><b>la</b></td><td>Ella <b>la</b> busca.</td><td>She looks for <b>it/her</b>.</td></tr>
+      <tr><td>us (1st pl.)</td><td><b>nos</b></td><td>Ella <b>nos</b> invita.</td><td>She invites <b>us</b>.</td></tr>
+      <tr><td>them (masc./mixed)</td><td><b>los</b></td><td>Yo <b>los</b> necesito.</td><td>I need <b>them</b>.</td></tr>
+      <tr><td>them (fem.)</td><td><b>las</b></td><td>Tú <b>las</b> tienes.</td><td>You have <b>them</b>.</td></tr>
+    </table>
+    <br>
+    <div class="rule">📍 Placement: Direct object pronouns go <b>BEFORE</b> the conjugated verb — or <b>attached to the end</b> of an infinitive or present participle.</div>
+    <div class="example">¿El libro? <b>Lo</b> tengo. — The book? I have <b>it</b>. (before conjugated verb)</div>
+    <div class="example">Quiero comprar<b>lo</b>. — I want to buy <b>it</b>. (attached to infinitive)</div>
+    <div class="example">Estoy busca<b>ndola</b>. — I'm looking for <b>her/it</b>. (attached to participle)</div>
+    <br>
+    <div class="rule">💡 Step-by-step: (1) Find what/whom receives the action. (2) Is it masc. or fem.? Sing. or plural? (3) Pick lo/la/los/las. (4) Place it before the verb.<br>
+    <i>Compro la camisa.</i> → la camisa (fem. sing.) → <b>La</b> compro.</div>
+    <br>
+    <div class="rule">⚠️ <b>lo vs. le:</b> Use <b>lo/la</b> for direct objects. Use <b>le</b> for indirect objects (see next topic!).</div></div>`
+  },
+  {
+    id:"obj_indirecto",title:"Indirect Object Pronouns",
+    html:`<div class="grammar-card"><h3>Pronombres de Objeto Indirecto — Indirect Object Pronouns</h3>
+    <div class="rule">The <b>indirect object</b> answers <b>"to whom?"</b> or <b>"for whom?"</b> the action is done. These pronouns replace that person.</div>
+    <table>
+      <tr><th>Person</th><th>Pronoun</th><th>Example</th><th>Translation</th></tr>
+      <tr><td>to me</td><td><b>me</b></td><td>Él <b>me</b> da el libro.</td><td>He gives the book <b>to me</b>.</td></tr>
+      <tr><td>to you (informal)</td><td><b>te</b></td><td>Yo <b>te</b> escribo un mensaje.</td><td>I write a message <b>to you</b>.</td></tr>
+      <tr><td>to him / her / you (formal)</td><td><b>le</b></td><td>Ella <b>le</b> habla en español.</td><td>She speaks <b>to him/her</b> in Spanish.</td></tr>
+      <tr><td>to us</td><td><b>nos</b></td><td>Ella <b>nos</b> compra un regalo.</td><td>She buys a gift <b>for us</b>.</td></tr>
+      <tr><td>to them / to you (plural)</td><td><b>les</b></td><td>Yo <b>les</b> digo la verdad.</td><td>I tell the truth <b>to them</b>.</td></tr>
+    </table>
+    <br>
+    <div class="rule">📍 Placement: Same as direct — <b>BEFORE</b> the conjugated verb, or <b>attached</b> to infinitive/participle.</div>
+    <div class="example"><b>Le</b> doy las llaves a María. — I give the keys <b>to María</b>.</div>
+    <div class="example"><b>Les</b> explico la tarea a los estudiantes. — I explain the homework <b>to the students</b>.</div>
+    <div class="example">Quiero comprar<b>le</b> un regalo. — I want to buy a gift <b>for him/her</b>.</div>
+    <br>
+    <div class="rule">💡 Clarifying <b>le / les</b>: Since <b>le</b> can mean to him, to her, or to you (formal), Spanish adds <b>a + noun/pronoun</b> to clarify:<br>
+    <b>Le</b> escribo <b>a María</b>. &nbsp;|&nbsp; <b>Le</b> escribo <b>a él</b>. &nbsp;|&nbsp; <b>Les</b> hablo <b>a mis amigos</b>.</div>
+    <br>
+    <div class="rule">🔑 Common verbs that take indirect objects:<br>
+    <b>dar</b> (give) · <b>decir</b> (tell) · <b>escribir</b> (write) · <b>explicar</b> (explain) · <b>hablar</b> (speak) · <b>mandar</b> (send) · <b>mostrar</b> (show) · <b>pedir</b> (ask for) · <b>preguntar</b> (ask) · <b>comprar</b> (buy for)</div>
+    <br>
+    <div class="rule">⚠️ Direct vs. Indirect side by side:<br>
+    <i>Ella compra <b>el libro</b>.</i> → direct object (what?) → Ella <b>lo</b> compra.<br>
+    <i>Ella compra el libro <b>para mí</b>.</i> → indirect (for whom?) → Ella <b>me</b> compra el libro.</div></div>`
   }
 ];
 
