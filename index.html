@@ -348,7 +348,21 @@ const verbs = [
   {v:"poder",m:"to be able to / can",type:"o→ue stem change",c:{yo:"puedo",tú:"puedes","él/ella":"puede",nosotros:"podemos",vosotros:"podéis","ellos/ellas":"pueden"}},
   {v:"jugar",m:"to play (a game/sport)",type:"u→ue stem change",c:{yo:"juego",tú:"juegas","él/ella":"juega",nosotros:"jugamos",vosotros:"jugáis","ellos/ellas":"juegan"}},
   {v:"dormir",m:"to sleep",type:"o→ue stem change",c:{yo:"duermo",tú:"duermes","él/ella":"duerme",nosotros:"dormimos",vosotros:"dormís","ellos/ellas":"duermen"}},
-  {v:"pedir",m:"to ask for / to request",type:"e→i stem change",c:{yo:"pido",tú:"pides","él/ella":"pide",nosotros:"pedimos",vosotros:"pedís","ellos/ellas":"piden"}}
+  {v:"pedir",m:"to ask for / to request",type:"e→i stem change",c:{yo:"pido",tú:"pides","él/ella":"pide",nosotros:"pedimos",vosotros:"pedís","ellos/ellas":"piden"}},
+
+  // ── PRETÉRITO (past tense) ──
+  {v:"hablar",m:"to speak — PAST (pretérito)",type:"pretérito -AR",c:{yo:"hablé",tú:"hablaste","él/ella":"habló",nosotros:"hablamos",vosotros:"hablasteis","ellos/ellas":"hablaron"}},
+  {v:"comprar",m:"to buy — PAST (pretérito)",type:"pretérito -AR",c:{yo:"compré",tú:"compraste","él/ella":"compró",nosotros:"compramos",vosotros:"comprasteis","ellos/ellas":"compraron"}},
+  {v:"trabajar",m:"to work — PAST (pretérito)",type:"pretérito -AR",c:{yo:"trabajé",tú:"trabajaste","él/ella":"trabajó",nosotros:"trabajamos",vosotros:"trabajasteis","ellos/ellas":"trabajaron"}},
+  {v:"comer",m:"to eat — PAST (pretérito)",type:"pretérito -ER",c:{yo:"comí",tú:"comiste","él/ella":"comió",nosotros:"comimos",vosotros:"comisteis","ellos/ellas":"comieron"}},
+  {v:"beber",m:"to drink — PAST (pretérito)",type:"pretérito -ER",c:{yo:"bebí",tú:"bebiste","él/ella":"bebió",nosotros:"bebimos",vosotros:"bebisteis","ellos/ellas":"bebieron"}},
+  {v:"vivir",m:"to live — PAST (pretérito)",type:"pretérito -IR",c:{yo:"viví",tú:"viviste","él/ella":"vivió",nosotros:"vivimos",vosotros:"vivisteis","ellos/ellas":"vivieron"}},
+  {v:"escribir",m:"to write — PAST (pretérito)",type:"pretérito -IR",c:{yo:"escribí",tú:"escribiste","él/ella":"escribió",nosotros:"escribimos",vosotros:"escribisteis","ellos/ellas":"escribieron"}},
+  {v:"ser / ir",m:"to be / to go — PAST (pretérito)",type:"pretérito irregular",c:{yo:"fui",tú:"fuiste","él/ella":"fue",nosotros:"fuimos",vosotros:"fuisteis","ellos/ellas":"fueron"}},
+  {v:"tener",m:"to have — PAST (pretérito)",type:"pretérito irregular",c:{yo:"tuve",tú:"tuviste","él/ella":"tuvo",nosotros:"tuvimos",vosotros:"tuvisteis","ellos/ellas":"tuvieron"}},
+  {v:"hacer",m:"to do/make — PAST (pretérito)",type:"pretérito irregular",c:{yo:"hice",tú:"hiciste","él/ella":"hizo",nosotros:"hicimos",vosotros:"hicisteis","ellos/ellas":"hicieron"}},
+  {v:"estar",m:"to be — PAST (pretérito)",type:"pretérito irregular",c:{yo:"estuve",tú:"estuviste","él/ella":"estuvo",nosotros:"estuvimos",vosotros:"estuvisteis","ellos/ellas":"estuvieron"}},
+  {v:"dar",m:"to give — PAST (pretérito)",type:"pretérito irregular",c:{yo:"di",tú:"diste","él/ella":"dio",nosotros:"dimos",vosotros:"disteis","ellos/ellas":"dieron"}}
 ];
 
 const grammarTopics = [
@@ -420,6 +434,32 @@ const grammarTopics = [
     <div class="example">Ella <b>comió</b> pizza anoche. — She ate pizza last night.</div>
     <br><div class="rule">Common time words: ayer, anoche, anteayer, la semana pasada, el año pasado</div></div>`
   }
+];
+
+// ─── PRETÉRITO QUESTION BANK ─────────────────────────────────────────────────
+const preteritoQuestions = [
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>hablar</b> for <b>yo</b>?', choices:['hablo','hablé','hablaste','habló'], answer:'hablé'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>comer</b> for <b>ella</b>?', choices:['come','comió','comiste','comí'], answer:'comió'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>vivir</b> for <b>nosotros</b>?', choices:['vivamos','vivimos','vivisteis','vivieran'], answer:'vivimos'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>hacer</b> for <b>él</b>?', choices:['hació','hacío','hizo','hicó'], answer:'hizo'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>ir/ser</b> for <b>yo</b>?', choices:['iba','voy','fui','fue'], answer:'fui'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>tener</b> for <b>tú</b>?', choices:['teniste','tuviste','tienes','tenías'], answer:'tuviste'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>estar</b> for <b>ellos</b>?', choices:['estaban','están','estuvieron','estuvieron'], answer:'estuvieron'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>dar</b> for <b>yo</b>?', choices:['dé','di','dí','doy'], answer:'di'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>hablar</b> for <b>ellos</b>?', choices:['hablan','hablaban','habló','hablaron'], answer:'hablaron'},
+  {type:'multiple', label:'Pretérito', prompt:'What is the preterite of <b>comprar</b> for <b>tú</b>?', choices:['compras','compraste','compraste','compraba'], answer:'compraste'},
+  {type:'multiple', label:'Pretérito', prompt:'Which word SIGNALS the preterite (past) tense?', choices:['ahora','mañana','ayer','siempre'], answer:'ayer'},
+  {type:'multiple', label:'Pretérito', prompt:'Which word SIGNALS the preterite tense?', choices:['todos los días','generalmente','anoche','normalmente'], answer:'anoche'},
+  {type:'multiple', label:'Pretérito', prompt:'Translate: "She spoke with the teacher yesterday."', choices:['Ella habla con la profesora ayer.','Ella habló con la profesora ayer.','Ella hablará con la profesora ayer.','Ella hablaba con la profesora ayer.'], answer:'Ella habló con la profesora ayer.'},
+  {type:'multiple', label:'Pretérito', prompt:'⚠️ Accent mark alert! Which means "he/she spoke" (past)?', choices:['hablo','habló','habla','habló'], answer:'habló'},
+  {type:'multiple', label:'Pretérito', prompt:'The preterite of <b>ser</b> and <b>ir</b> are the same. How do you say "We went"?', choices:['vamos','fuimos','íbamos','vayamos'], answer:'fuimos'},
+  {type:'fill', label:'Pretérito', prompt:'Ayer yo ___ con mi profesora. (hablar — fill in preterite form)', answer:'hablé'},
+  {type:'fill', label:'Pretérito', prompt:'Ella ___ pizza anoche. (comer — fill in preterite form)', answer:'comió'},
+  {type:'fill', label:'Pretérito', prompt:'Nosotros ___ en California el año pasado. (vivir — fill in preterite form)', answer:'vivimos'},
+  {type:'fill', label:'Pretérito', prompt:'Ellos ___ la tarea ayer. (hacer — fill in preterite form)', answer:'hicieron'},
+  {type:'fill', label:'Pretérito', prompt:'Yo ___ al mercado la semana pasada. (ir — fill in preterite form)', answer:'fui'},
+  {type:'fill', label:'Pretérito', prompt:'Tú ___ mucho dinero ayer. (gastar — fill in preterite form)', answer:'gastaste'},
+  {type:'fill', label:'Pretérito', prompt:'Ella ___ una falda nueva. (comprar — fill in preterite form)', answer:'compró'},
 ];
 
 // ─── STORAGE ─────────────────────────────────────────────────────────────────
@@ -624,7 +664,18 @@ function markCard(correct) {
 
 // ─── CONJUGATION ─────────────────────────────────────────────────────────────
 function startConj() {
-  conjList = shuffle([...verbs]);
+  let verbPool;
+  if (sessionModule === 5) {
+    // Module 5 = preterite drills only
+    verbPool = verbs.filter(v => v.type.startsWith('pretérito'));
+  } else if (sessionModule === 0) {
+    // All modules = everything (present + preterite)
+    verbPool = [...verbs];
+  } else {
+    // Modules 1–4 = present tense only
+    verbPool = verbs.filter(v => !v.type.startsWith('pretérito'));
+  }
+  conjList = shuffle(verbPool);
   conjIndex = 0; conjCorrect = 0; conjWrong = 0;
   showScreen('conj');
   showVerb();
@@ -674,9 +725,15 @@ function normalize(s) {
 function buildExamQuestions() {
   const pool = shuffle([...getVocab()]);
   const questions = [];
+  const includePreterito = (sessionModule === 5 || sessionModule === 0);
+
+  // Vocab slots: fewer if we're adding preterite questions
+  const vocabSlots = includePreterito ? 3 : 5;
+  const vocabSlots2 = includePreterito ? 2 : 4;
+  const conjSlots = includePreterito ? 2 : 4;
 
   // Multiple choice — Spanish → English
-  for (let i = 0; i < 5 && i < pool.length; i++) {
+  for (let i = 0; i < vocabSlots && i < pool.length; i++) {
     const correct = pool[i];
     const distractors = shuffle(pool.filter(x => x !== correct)).slice(0,3).map(x => x.e);
     const choices = shuffle([correct.e, ...distractors]);
@@ -684,15 +741,16 @@ function buildExamQuestions() {
   }
 
   // Multiple choice — English → Spanish
-  for (let i = 5; i < 9 && i < pool.length; i++) {
+  for (let i = vocabSlots; i < vocabSlots + vocabSlots2 && i < pool.length; i++) {
     const correct = pool[i];
     const distractors = shuffle(pool.filter(x => x !== correct)).slice(0,3).map(x => x.s);
     const choices = shuffle([correct.s, ...distractors]);
     questions.push({ type:'multiple', label:'Vocabulary', prompt:`How do you say "<b>${correct.e}</b>" in Spanish?`, choices, answer: correct.s, _wordKey: correct.s });
   }
 
-  // Fill in conjugation
-  const verbSample = shuffle([...verbs]).slice(0, 4);
+  // Fill in conjugation (present tense verbs for non-preterite modules)
+  const presentVerbs = verbs.filter(v => !v.type.startsWith('pretérito'));
+  const verbSample = shuffle([...presentVerbs]).slice(0, conjSlots);
   verbSample.forEach(verb => {
     const pronouns = Object.keys(verb.c);
     const pronoun = pronouns[Math.floor(Math.random() * pronouns.length)];
@@ -702,6 +760,12 @@ function buildExamQuestions() {
       answer: verb.c[pronoun], hint: `${verb.v} → ${pronoun}: ___`
     });
   });
+
+  // Preterite questions for Module 5 or All
+  if (includePreterito) {
+    const pretSample = shuffle([...preteritoQuestions]).slice(0, 8);
+    questions.push(...pretSample);
+  }
 
   return shuffle(questions).slice(0, 15);
 }
