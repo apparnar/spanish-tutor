@@ -149,11 +149,28 @@
   .voice-correct { color: var(--green); font-weight:700; font-size:1.1rem; }
   .no-speech-note { text-align:center; font-size:.72rem; color:#bbb; margin-top:.35rem; }
 
-  /* MODEL TEST BUTTONS */
-  .model-tests-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:.5rem; margin-top:.6rem; }
-  .model-test-btn { background:var(--card-bg); border:2px solid var(--gold); border-radius:10px; padding:.65rem .3rem; cursor:pointer; font-size:.82rem; color:var(--dark); text-align:center; transition:all .2s; line-height:1.3; }
-  .model-test-btn:hover { background:#fef9e7; border-color:#e67e22; }
-  .model-test-btn b { font-size:1.1rem; display:block; color:var(--red); }
+  /* TABS */
+  .tab-bar { display:flex; background:var(--light); border-radius:14px; padding:4px; margin-bottom:1.2rem; gap:4px; }
+  .tab-btn { flex:1; border:none; border-radius:10px; padding:.65rem; font-size:.95rem; font-weight:700; cursor:pointer; background:transparent; color:#888; transition:all .2s; }
+  .tab-btn.active { background:#fff; color:var(--dark); box-shadow:0 2px 8px rgba(0,0,0,.12); }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+
+  /* MODEL TEST CARDS */
+  .model-test-cards { display:flex; flex-direction:column; gap:.75rem; margin-top:.75rem; }
+  .model-test-card { background:var(--card-bg); border:2px solid var(--gold); border-radius:14px; padding:1rem 1.2rem; cursor:pointer; display:flex; align-items:center; gap:1rem; transition:all .2s; }
+  .model-test-card:hover { background:#fef9e7; border-color:#e67e22; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.1); }
+  .mtc-num { font-size:1.6rem; font-weight:900; color:var(--red); min-width:2.5rem; text-align:center; }
+  .mtc-body { flex:1; }
+  .mtc-title { font-weight:700; font-size:1rem; color:var(--dark); }
+  .mtc-topics { font-size:.78rem; color:#888; margin-top:.2rem; line-height:1.4; }
+  .mtc-arrow { font-size:1.3rem; color:#ccc; }
+  .exam-divider { text-align:center; color:#aaa; font-size:.85rem; margin:1rem 0 .5rem; position:relative; }
+  .exam-divider::before, .exam-divider::after { content:''; position:absolute; top:50%; width:30%; height:1px; background:#ddd; }
+  .exam-divider::before { left:0; }
+  .exam-divider::after { right:0; }
+  .final-exam-launch { display:block; width:100%; padding:1.2rem; background:linear-gradient(135deg,#f39c12 0%,#c0392b 100%); color:#fff; border:none; border-radius:14px; font-size:1.15rem; font-weight:800; cursor:pointer; transition:opacity .2s; box-shadow:0 4px 14px rgba(192,57,43,.3); }
+  .final-exam-launch:hover { opacity:.9; }
 
   @media (max-width: 480px) {
     .module-grid { grid-template-columns: repeat(3, 1fr); }
@@ -177,93 +194,137 @@
 <div id="home" class="screen active">
   <div class="welcome">
     <h2>¡Bienvenido/a!</h2>
-    <p>Choose your module and practice mode to get started.</p>
+    <p>Your SPAN 1A study companion — Módulos 1–5.</p>
   </div>
 
-  <div class="dashboard">
-    <div class="dash-card streak"><div class="d-val" id="dashStreak">0🔥</div><div class="d-label">Day Streak</div></div>
-    <div class="dash-card weak"><div class="d-val" id="dashWeak">0</div><div class="d-label">Weak Words</div></div>
-    <div class="dash-card mastery"><div class="d-val" id="dashMastery">0%</div><div class="d-label">Mastered</div></div>
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabPractice" onclick="switchTab('practice')">📚 Practice</button>
+    <button class="tab-btn" id="tabExam" onclick="switchTab('exam')">🎓 Exam Prep</button>
   </div>
 
-  <div id="weakModeWrap" style="display:none">
-    <button class="weak-mode-btn" onclick="selectMode('weak');selectModule(0)">
-      <span class="icon">🎯</span>
-      <div class="info">
-        <div class="title">Practice Weak Words</div>
-        <div class="desc">Words you've missed — drill until mastered</div>
+  <!-- ── PRACTICE TAB ── -->
+  <div class="tab-panel active" id="panelPractice">
+    <div class="dashboard">
+      <div class="dash-card streak"><div class="d-val" id="dashStreak">0🔥</div><div class="d-label">Day Streak</div></div>
+      <div class="dash-card weak"><div class="d-val" id="dashWeak">0</div><div class="d-label">Weak Words</div></div>
+      <div class="dash-card mastery"><div class="d-val" id="dashMastery">0%</div><div class="d-label">Mastered</div></div>
+    </div>
+
+    <div id="weakModeWrap" style="display:none">
+      <button class="weak-mode-btn" onclick="selectMode('weak');selectModule(0)">
+        <span class="icon">🎯</span>
+        <div class="info">
+          <div class="title">Practice Weak Words</div>
+          <div class="desc">Words you've missed — drill until mastered</div>
+        </div>
+        <span class="weak-badge" id="weakBadge">0</span>
+      </button>
+    </div>
+
+    <p style="font-weight:700;margin-bottom:.6rem;">Which módulo are you studying?</p>
+    <div class="module-grid">
+      <div class="module-btn" onclick="selectModule(0)">
+        <div class="num">All</div>
+        <div class="label">Full Review</div>
       </div>
-      <span class="weak-badge" id="weakBadge">0</span>
+      <div class="module-btn" onclick="selectModule(1)">
+        <div class="num">1</div>
+        <div class="label">Hola, ¿cómo estás?</div>
+      </div>
+      <div class="module-btn" onclick="selectModule(2)">
+        <div class="num">2</div>
+        <div class="label">La universidad</div>
+      </div>
+      <div class="module-btn" onclick="selectModule(3)">
+        <div class="num">3</div>
+        <div class="label">Mi familia</div>
+      </div>
+      <div class="module-btn" onclick="selectModule(4)">
+        <div class="num">4</div>
+        <div class="label">Los pasatiempos</div>
+      </div>
+      <div class="module-btn" onclick="selectModule(5)">
+        <div class="num">5</div>
+        <div class="label">De compras</div>
+      </div>
+    </div>
+
+    <p style="font-weight:700;margin:.75rem 0 .6rem;">What do you want to practice?</p>
+    <div class="mode-grid">
+      <div class="mode-btn" onclick="selectMode('flash')">
+        <span class="icon">🃏</span>
+        <div class="info"><div class="title">Flashcards</div><div class="desc">Vocabulary quiz with score</div></div>
+      </div>
+      <div class="mode-btn" onclick="selectMode('conj')">
+        <span class="icon">✏️</span>
+        <div class="info"><div class="title">Conjugation</div><div class="desc">Fill in verb tables</div></div>
+      </div>
+      <div class="mode-btn" onclick="selectMode('exam')">
+        <span class="icon">📝</span>
+        <div class="info"><div class="title">Quiz</div><div class="desc">Mixed vocab &amp; grammar</div></div>
+      </div>
+      <div class="mode-btn" onclick="selectMode('grammar')">
+        <span class="icon">📖</span>
+        <div class="info"><div class="title">Grammar</div><div class="desc">Rules &amp; examples</div></div>
+      </div>
+    </div>
+
+    <button class="start-btn" id="startBtn" onclick="startSession()" disabled>Choose a module and mode above ↑</button>
+  </div>
+
+  <!-- ── EXAM PREP TAB ── -->
+  <div class="tab-panel" id="panelExam">
+    <button class="final-exam-launch" onclick="launchFinalExam()">
+      🎓 Final Exam Prep — All Modules
     </button>
-  </div>
+    <p style="font-size:.78rem;color:#888;text-align:center;margin-top:.45rem;">
+      20 random questions · present progressive, conjugation, ser/estar, saber/conocer, vocab &amp; more
+    </p>
 
-  <p style="font-weight:700;margin-bottom:.6rem;">Which módulo are you studying?</p>
-  <div class="module-grid">
-    <div class="module-btn" onclick="selectModule(0)">
-      <div class="num">All</div>
-      <div class="label">Full Review</div>
-    </div>
-    <div class="module-btn" onclick="selectModule(1)">
-      <div class="num">1</div>
-      <div class="label">Hola, ¿cómo estás?</div>
-    </div>
-    <div class="module-btn" onclick="selectModule(2)">
-      <div class="num">2</div>
-      <div class="label">La universidad</div>
-    </div>
-    <div class="module-btn" onclick="selectModule(3)">
-      <div class="num">3</div>
-      <div class="label">Mi familia</div>
-    </div>
-    <div class="module-btn" onclick="selectModule(4)">
-      <div class="num">4</div>
-      <div class="label">Los pasatiempos</div>
-    </div>
-    <div class="module-btn" onclick="selectModule(5)">
-      <div class="num">5</div>
-      <div class="label">De compras</div>
-    </div>
-  </div>
+    <div class="exam-divider">— or practice a specific model test —</div>
 
-  <p style="font-weight:700;margin:.75rem 0 .6rem;">What do you want to practice?</p>
-  <div class="mode-grid">
-    <div class="mode-btn" onclick="selectMode('flash')">
-      <span class="icon">🃏</span>
-      <div class="info"><div class="title">Flashcards</div><div class="desc">Vocabulary quiz with score</div></div>
-    </div>
-    <div class="mode-btn" onclick="selectMode('conj')">
-      <span class="icon">✏️</span>
-      <div class="info"><div class="title">Conjugation</div><div class="desc">Fill in verb tables</div></div>
-    </div>
-    <div class="mode-btn" onclick="selectMode('exam')">
-      <span class="icon">📝</span>
-      <div class="info"><div class="title">Exam Prep</div><div class="desc">Mixed quiz, scored</div></div>
-    </div>
-    <div class="mode-btn" onclick="selectMode('grammar')">
-      <span class="icon">📖</span>
-      <div class="info"><div class="title">Grammar</div><div class="desc">Rules & examples</div></div>
-    </div>
-  </div>
-  <div style="margin-top:.75rem;background:linear-gradient(135deg,#f39c12 0%,#c0392b 100%);border-radius:14px;padding:3px">
-    <div class="mode-btn" id="finalExamBtn" onclick="selectMode('finalExam')" style="background:#fff;border-radius:11px;border:none;width:100%;gap:1rem">
-      <span class="icon">🎓</span>
-      <div class="info">
-        <div class="title">Final Exam Prep <span style="background:#c0392b;color:#fff;font-size:.68rem;border-radius:99px;padding:.1rem .5rem;margin-left:.4rem;vertical-align:middle">ALL MODULES</span></div>
-        <div class="desc">Based on your teacher's model test · present progressive, conjugation, ser/estar, saber/conocer, vocabulary &amp; more</div>
+    <div class="model-test-cards">
+      <div class="model-test-card" onclick="launchModelTest(1)">
+        <div class="mtc-num">1</div>
+        <div class="mtc-body">
+          <div class="mtc-title">🏫 University Life</div>
+          <div class="mtc-topics">-AR verbs · GUSTAR · ESTAR · classroom vocab · days of week · present progressive</div>
+        </div>
+        <div class="mtc-arrow">›</div>
       </div>
-    </div>
-  </div>
-  <button class="start-btn" id="startBtn" onclick="startSession()" disabled>Choose a module and mode to start</button>
-
-  <div style="margin-top:1rem;border-top:2px solid var(--light);padding-top:.85rem">
-    <p style="font-weight:700;margin-bottom:.2rem">📋 Model Practice Tests</p>
-    <p style="font-size:.78rem;color:#888;margin-bottom:.6rem">Your teacher's format · past tense included · no vosotros · ~30 questions each</p>
-    <div class="model-tests-grid">
-      <button class="model-test-btn" onclick="launchModelTest(1)">Test<b>1</b>University</button>
-      <button class="model-test-btn" onclick="launchModelTest(2)">Test<b>2</b>Travel</button>
-      <button class="model-test-btn" onclick="launchModelTest(3)">Test<b>3</b>Shopping</button>
-      <button class="model-test-btn" onclick="launchModelTest(4)">Test<b>4</b>Family</button>
-      <button class="model-test-btn" onclick="launchModelTest(5)">Test<b>5</b>Hard Mix</button>
+      <div class="model-test-card" onclick="launchModelTest(2)">
+        <div class="mtc-num">2</div>
+        <div class="mtc-body">
+          <div class="mtc-title">✈️ Travel &amp; Hobbies</div>
+          <div class="mtc-topics">stem-changing verbs · IR · irregular yo · weather · hotel vocab · preterite</div>
+        </div>
+        <div class="mtc-arrow">›</div>
+      </div>
+      <div class="model-test-card" onclick="launchModelTest(3)">
+        <div class="mtc-num">3</div>
+        <div class="mtc-body">
+          <div class="mtc-title">🛍️ Shopping &amp; Colors</div>
+          <div class="mtc-topics">demonstratives · preterite (regular &amp; irregular) · clothing · numbers · direct objects</div>
+        </div>
+        <div class="mtc-arrow">›</div>
+      </div>
+      <div class="model-test-card" onclick="launchModelTest(4)">
+        <div class="mtc-num">4</div>
+        <div class="mtc-body">
+          <div class="mtc-title">👨‍👩‍👧 Family &amp; Descriptions</div>
+          <div class="mtc-topics">-ER/-IR verbs · TENER · possessive adjectives · adjective agreement · SABER/CONOCER</div>
+        </div>
+        <div class="mtc-arrow">›</div>
+      </div>
+      <div class="model-test-card" onclick="launchModelTest(5)">
+        <div class="mtc-num">5</div>
+        <div class="mtc-body">
+          <div class="mtc-title">🔥 Hard Mix — All Topics</div>
+          <div class="mtc-topics">cumulative · SER/ESTAR · preterite · stem-changers · indirect objects · tricky forms</div>
+        </div>
+        <div class="mtc-arrow">›</div>
+      </div>
     </div>
   </div>
 </div>
@@ -1079,8 +1140,22 @@ function startSession() {
   else if (sessionMode === 'grammar') startGrammar();
   else if (sessionMode === 'finalExam') startFinalExam();
 }
+function switchTab(tab) {
+  const isPractice = tab === 'practice';
+  document.getElementById('tabPractice').classList.toggle('active', isPractice);
+  document.getElementById('tabExam').classList.toggle('active', !isPractice);
+  document.getElementById('panelPractice').classList.toggle('active', isPractice);
+  document.getElementById('panelExam').classList.toggle('active', !isPractice);
+}
+function launchFinalExam() {
+  sessionModule = 0;
+  sessionMode = 'finalExam';
+  updateStreak();
+  startFinalExam();
+}
 function goHome() {
   refreshDashboard();
+  switchTab('practice');
   showScreen('home');
 }
 function showScreen(id) {
