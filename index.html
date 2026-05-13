@@ -174,6 +174,14 @@
   .final-exam-launch { display:block; width:100%; padding:1.2rem; background:linear-gradient(135deg,#f39c12 0%,#c0392b 100%); color:#fff; border:none; border-radius:14px; font-size:1.15rem; font-weight:800; cursor:pointer; transition:opacity .2s; box-shadow:0 4px 14px rgba(192,57,43,.3); }
   .final-exam-launch:hover { opacity:.9; }
 
+  /* READING COMPREHENSION */
+  .reading-passage { background:var(--card-bg); border-radius:16px; box-shadow:var(--shadow); padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .reading-passage-label { font-size:.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--red); font-weight:700; margin-bottom:.4rem; }
+  .reading-passage-title { font-size:1.1rem; font-weight:800; color:var(--dark); margin-bottom:.9rem; }
+  .reading-passage-body { font-size:.95rem; line-height:1.8; color:#333; white-space:pre-wrap; }
+  .reading-passage-body em { background:#fff9c4; padding:0 2px; border-radius:3px; font-style:normal; }
+  .reading-q-number { font-size:.75rem; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:.5px; margin-bottom:.35rem; }
+
   @media (max-width: 480px) {
     .module-grid { grid-template-columns: repeat(3, 1fr); }
     .mode-grid { grid-template-columns: 1fr; }
@@ -269,6 +277,10 @@
       <div class="mode-btn" onclick="selectMode('grammar')">
         <span class="icon">📖</span>
         <div class="info"><div class="title">Grammar</div><div class="desc">Rules &amp; examples</div></div>
+      </div>
+      <div class="mode-btn" onclick="selectMode('reading');updateStartBtn(true)" style="grid-column:1/-1">
+        <span class="icon">🧩</span>
+        <div class="info"><div class="title">Reading Comprehension</div><div class="desc">Read a passage, answer 7 questions in English or Spanish</div></div>
       </div>
     </div>
 
@@ -399,6 +411,28 @@
   <p style="font-weight:700;margin-bottom:.75rem;">Choose a grammar topic:</p>
   <div class="topic-list" id="topicList"></div>
   <div id="grammarContent" style="margin-top:1rem;display:none"></div>
+</div>
+
+<!-- READING COMPREHENSION -->
+<div id="reading" class="screen">
+  <button class="back-btn" onclick="goHome()">← Back</button>
+  <div class="score-row">
+    <span id="readingProgress">Question 1 of 7</span>
+    <span class="score" id="readingScore">✓ 0 &nbsp; ✗ 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="readingBar" style="width:0%"></div></div>
+  <div class="reading-passage" id="readingPassageBox">
+    <div class="reading-passage-label">📖 Lectura</div>
+    <div class="reading-passage-title" id="readingPassageTitle"></div>
+    <div class="reading-passage-body" id="readingPassageBody"></div>
+  </div>
+  <div class="question-card">
+    <div class="reading-q-number" id="readingQNum"></div>
+    <div class="q-text" id="readingQText"></div>
+    <div id="readingQBody"></div>
+    <div class="feedback" id="readingFeedback"></div>
+    <button class="next-q-btn" id="readingNextBtn" onclick="nextReadingQuestion()" style="display:none">Next →</button>
+  </div>
 </div>
 
 <!-- RESULTS -->
@@ -679,6 +713,162 @@ const grammarQuizBanks = {
     {type:'multiple', label:'Indirect Object Pronouns', prompt:'In "Me lo da", what does <b>lo</b> replace?', choices:['the indirect object','the subject','the direct object','the verb'], answer:'the direct object'},
   ],
 };
+
+// ─── READING COMPREHENSION PASSAGES ──────────────────────────────────────────
+const readingPassages = [
+  {
+    id: 1,
+    title: 'Carlos, el estudiante mexicano',
+    modules: 'Módulos 1–4',
+    body: `Carlos es un estudiante de México. Tiene 20 años y es muy inteligente y simpático. Hace cuatro meses, Carlos se mudó a Los Ángeles con su hermano. Ahora vive en una casa pequeña cerca de la universidad.
+
+Carlos estudia en UCLA. Le gustan mucho sus clases, especialmente la clase de música. También practica inglés todos los días porque quiere comunicarse mejor con sus compañeros y profesores.
+
+En su tiempo libre, Carlos juega fútbol, escucha música y cocina comida mexicana con su hermano. También habla por teléfono con sus padres en México. A veces extraña (misses) su ciudad, pero está emocionado por su nueva vida y sus experiencias nuevas.`,
+    questions: [
+      { q: '¿De dónde es Carlos?', choices: ['De Los Ángeles', 'De México', 'De España', 'De Texas'], answer: 'De México' },
+      { q: '¿Cuántos años tiene Carlos?', choices: ['18 años', '22 años', '20 años', '25 años'], answer: '20 años' },
+      { q: '¿Con quién vive Carlos en Los Ángeles?', choices: ['Con sus padres', 'Con su hermana', 'Con su hermano', 'Solo'], answer: 'Con su hermano' },
+      { q: '¿Dónde estudia Carlos?', choices: ['En UCLA', 'En USC', 'En UNAM', 'En Harvard'], answer: 'En UCLA' },
+      { q: '¿Qué clase le gusta mucho a Carlos?', choices: ['La clase de historia', 'La clase de inglés', 'La clase de música', 'La clase de matemáticas'], answer: 'La clase de música' },
+      { q: '¿Qué hace Carlos en su tiempo libre?', choices: ['Lee libros y estudia', 'Trabaja y descansa', 'Juega fútbol, escucha música y cocina', 'Viaja y toma fotos'], answer: 'Juega fútbol, escucha música y cocina' },
+      { q: '¿Con quién habla Carlos por teléfono?', choices: ['Con sus amigos en UCLA', 'Con sus padres en México', 'Con su profesor de música', 'Con su hermano'], answer: 'Con sus padres en México' },
+    ]
+  },
+  {
+    id: 2,
+    title: 'Un día en la universidad',
+    modules: 'Módulo 2',
+    body: `Valeria es una estudiante de primer año en el colegio comunitario. Es de Costa Rica y tiene 19 años. Todos los días llega a la universidad a las ocho de la mañana.
+
+Valeria estudia biología y también toma clases de inglés y matemáticas. Su clase favorita es biología porque le gusta aprender sobre la naturaleza (nature). Trabaja mucho y siempre hace su tarea en la biblioteca.
+
+Hoy es miércoles. Valeria come en la cafetería con su compañera de clase, Priya. Después de comer, las dos chicas van a la librería porque necesitan comprar libros para su clase de historia. Valeria está cansada pero contenta.`,
+    questions: [
+      { q: '¿De dónde es Valeria?', choices: ['De México', 'De España', 'De Costa Rica', 'De Cuba'], answer: 'De Costa Rica' },
+      { q: '¿A qué hora llega Valeria a la universidad?', choices: ['A las siete', 'A las ocho de la mañana', 'A las nueve', 'A las diez'], answer: 'A las ocho de la mañana' },
+      { q: '¿Cuál es la clase favorita de Valeria?', choices: ['Inglés', 'Matemáticas', 'Historia', 'Biología'], answer: 'Biología' },
+      { q: '¿Dónde hace Valeria su tarea?', choices: ['En la cafetería', 'En su casa', 'En la biblioteca', 'En la residencia estudiantil'], answer: 'En la biblioteca' },
+      { q: '¿Qué día es hoy en el texto?', choices: ['Lunes', 'Martes', 'Miércoles', 'Viernes'], answer: 'Miércoles' },
+      { q: '¿Con quién come Valeria en la cafetería?', choices: ['Con su hermana', 'Con su profesora', 'Con su compañera de clase Priya', 'Sola'], answer: 'Con su compañera de clase Priya' },
+      { q: '¿Por qué van Valeria y Priya a la librería?', choices: ['Para comer', 'Para comprar libros de historia', 'Para estudiar biología', 'Para tomar un café'], answer: 'Para comprar libros de historia' },
+    ]
+  },
+  {
+    id: 3,
+    title: 'La familia Ramírez',
+    modules: 'Módulo 3',
+    body: `La familia Ramírez es una familia grande y simpática. El padre se llama Eduardo y la madre se llama Lucía. Tienen cuatro hijos: dos hijos y dos hijas.
+
+El hijo mayor se llama Diego. Tiene 24 años y es ingeniero. La hija menor se llama Isabella. Solo tiene 10 años y es muy inteligente. Los otros dos hijos se llaman Andrés y Sofía. Andrés es estudiante universitario y Sofía trabaja en un hospital como enfermera.
+
+Los abuelos también viven cerca. La abuela se llama Rosa y tiene 68 años. El abuelo se llama Héctor y tiene 71 años. Los fines de semana, toda la familia come junta en la casa de los abuelos. A todos les gusta mucho estar juntos.`,
+    questions: [
+      { q: '¿Cómo se llama el padre de la familia?', choices: ['Héctor', 'Diego', 'Eduardo', 'Andrés'], answer: 'Eduardo' },
+      { q: '¿Cuántos hijos tienen Eduardo y Lucía?', choices: ['Dos', 'Tres', 'Cuatro', 'Cinco'], answer: 'Cuatro' },
+      { q: '¿Cuál es la profesión de Diego?', choices: ['Médico', 'Profesor', 'Ingeniero', 'Enfermero'], answer: 'Ingeniero' },
+      { q: '¿Dónde trabaja Sofía?', choices: ['En una escuela', 'En un banco', 'En una universidad', 'En un hospital'], answer: 'En un hospital' },
+      { q: '¿Cuántos años tiene la abuela Rosa?', choices: ['71 años', '65 años', '68 años', '60 años'], answer: '68 años' },
+      { q: '¿Cuándo come junta la familia?', choices: ['Todos los días', 'Los fines de semana', 'Los lunes', 'Los viernes por la noche'], answer: 'Los fines de semana' },
+      { q: '¿Dónde come junta la familia?', choices: ['En el restaurante', 'En la casa de Diego', 'En la casa de los abuelos', 'En la casa de Eduardo y Lucía'], answer: 'En la casa de los abuelos' },
+    ]
+  },
+  {
+    id: 4,
+    title: 'El fin de semana de Sofía',
+    modules: 'Módulo 4',
+    body: `Sofía tiene dieciséis años y vive en Miami con su familia. A ella le gustan mucho los deportes y la música. Los sábados por la mañana, practica natación (swimming) con su equipo.
+
+Por la tarde del sábado, Sofía va al cine con sus amigos. Le gustan mucho las películas de acción y de comedia. Después del cine, todos van a un restaurante y comen pizza.
+
+Los domingos, Sofía descansa y toca la guitarra en su cuarto. También lee libros de aventura y escucha música en línea. A veces ayuda a su mamá a preparar la cena. Sofía dice que el fin de semana es su tiempo favorito porque puede hacer las cosas que le gustan.`,
+    questions: [
+      { q: '¿Cuántos años tiene Sofía?', choices: ['14 años', '18 años', '16 años', '20 años'], answer: '16 años' },
+      { q: '¿Dónde vive Sofía?', choices: ['En Nueva York', 'En Los Ángeles', 'En Miami', 'En Chicago'], answer: 'En Miami' },
+      { q: '¿Qué hace Sofía los sábados por la mañana?', choices: ['Toca la guitarra', 'Lee libros', 'Practica natación', 'Va al cine'], answer: 'Practica natación' },
+      { q: '¿Qué tipo de películas le gustan a Sofía?', choices: ['De terror y ciencia ficción', 'De acción y comedia', 'De romance y drama', 'Documentales'], answer: 'De acción y comedia' },
+      { q: '¿Qué comen Sofía y sus amigos después del cine?', choices: ['Hamburguesas', 'Tacos', 'Pizza', 'Sushi'], answer: 'Pizza' },
+      { q: '¿Qué instrumento toca Sofía los domingos?', choices: ['El piano', 'La guitarra', 'El violín', 'La flauta'], answer: 'La guitarra' },
+      { q: '¿Por qué le gusta el fin de semana a Sofía?', choices: ['Porque no tiene clases', 'Porque trabaja mucho', 'Porque puede hacer las cosas que le gustan', 'Porque visita a sus abuelos'], answer: 'Porque puede hacer las cosas que le gustan' },
+    ]
+  },
+  {
+    id: 5,
+    title: 'De compras con mamá',
+    modules: 'Módulo 5',
+    body: `Hoy, Gabriela va de compras con su mamá al centro comercial (mall). Necesitan comprar ropa para el verano. Primero, entran a una tienda grande donde hay muchas rebajas (sales).
+
+La mamá de Gabriela compra una blusa roja por veinte dólares. También compra unos pantalones negros. Gabriela encuentra unos zapatos azules que le gustan mucho, pero cuestan ochenta dólares. Son muy caros. Al final, Gabriela compra una falda verde y una camiseta blanca.
+
+Después de comprar ropa, las dos van a un café y toman un té frío. La mamá de Gabriela paga con tarjeta de crédito. Gabriela está muy contenta con su ropa nueva. Le gusta mucho ir de compras con su mamá.`,
+    questions: [
+      { q: '¿Adónde van Gabriela y su mamá?', choices: ['Al mercado', 'A la playa', 'Al centro comercial', 'A la universidad'], answer: 'Al centro comercial' },
+      { q: '¿Para qué estación necesitan ropa?', choices: ['Para el invierno', 'Para el otoño', 'Para la primavera', 'Para el verano'], answer: 'Para el verano' },
+      { q: '¿Qué compra la mamá de Gabriela primero?', choices: ['Una falda azul', 'Una blusa roja', 'Unos zapatos negros', 'Una camiseta verde'], answer: 'Una blusa roja' },
+      { q: '¿Cuánto cuestan los zapatos que le gustan a Gabriela?', choices: ['Veinte dólares', 'Cuarenta dólares', 'Ochenta dólares', 'Cien dólares'], answer: 'Ochenta dólares' },
+      { q: '¿Qué compra Gabriela al final?', choices: ['Una blusa y unos zapatos', 'Una falda verde y una camiseta blanca', 'Unos pantalones y una chaqueta', 'Un vestido azul'], answer: 'Una falda verde y una camiseta blanca' },
+      { q: '¿Qué hacen después de comprar ropa?', choices: ['Van al cine', 'Comen pizza', 'Toman un té frío en un café', 'Regresan a casa'], answer: 'Toman un té frío en un café' },
+      { q: '¿Cómo paga la mamá de Gabriela?', choices: ['Con efectivo (cash)', 'Con tarjeta de crédito', 'Con cheque', 'Con una aplicación'], answer: 'Con tarjeta de crédito' },
+    ]
+  },
+  {
+    id: 6,
+    title: 'Mi amigo Tomás',
+    modules: 'Módulos 1–2',
+    body: `Mi amigo se llama Tomás. Es de Buenos Aires, Argentina. Es alto, moreno y muy simpático. Tiene veintitrés años y habla español e inglés muy bien.
+
+Tomás y yo somos compañeros de cuarto en la residencia estudiantil. Los dos estudiamos en la misma universidad. Tomás estudia administración de empresas y yo estudio psicología. Nuestras clases son difíciles pero interesantes.
+
+Por las mañanas, Tomás y yo desayunamos juntos en la cafetería. Por las tardes, él trabaja en la biblioteca y yo practico español con mis otros compañeros. Por las noches, miramos la televisión o escuchamos música. Tomás es un muy buen amigo y estoy muy contento de vivir con él.`,
+    questions: [
+      { q: '¿De dónde es Tomás?', choices: ['De México', 'De Colombia', 'De Buenos Aires, Argentina', 'De España'], answer: 'De Buenos Aires, Argentina' },
+      { q: '¿Cómo es Tomás físicamente?', choices: ['Bajo y rubio', 'Alto y moreno', 'Delgado y pelirrojo', 'Gordo y simpático'], answer: 'Alto y moreno' },
+      { q: '¿Dónde viven Tomás y el narrador?', choices: ['En una casa cerca de la universidad', 'En la cafetería', 'En la residencia estudiantil', 'En un apartamento'], answer: 'En la residencia estudiantil' },
+      { q: '¿Qué estudia Tomás?', choices: ['Psicología', 'Biología', 'Administración de empresas', 'Inglés'], answer: 'Administración de empresas' },
+      { q: '¿Dónde desayunan Tomás y el narrador?', choices: ['En su cuarto', 'En la librería', 'En la cafetería', 'En un restaurante'], answer: 'En la cafetería' },
+      { q: '¿Qué hace Tomás por las tardes?', choices: ['Practica deportes', 'Trabaja en la biblioteca', 'Escucha música', 'Estudia psicología'], answer: 'Trabaja en la biblioteca' },
+      { q: '¿Qué hacen los dos por las noches?', choices: ['Estudian juntos', 'Comen pizza', 'Miran la televisión o escuchan música', 'Van al cine'], answer: 'Miran la televisión o escuchan música' },
+    ]
+  },
+  {
+    id: 7,
+    title: 'Las vacaciones de Pablo',
+    modules: 'Módulos 4–5',
+    body: `El verano pasado, Pablo viajó a Puerto Rico con su familia. Fue un viaje increíble. Salieron de Nueva York el primero de junio y regresaron el quince de junio.
+
+En Puerto Rico, Pablo y su familia visitaron el Viejo San Juan. Comieron mucha comida puertorriqueña: arroz con pollo, tostones y mofongo. También fueron a la playa todos los días. Pablo nadó en el mar y tomó muchas fotos.
+
+Un día, la familia fue a un mercado artesanal. La mamá de Pablo compró souvenirs y recuerdos (souvenirs). Pablo compró una camiseta verde con la bandera de Puerto Rico. El viaje costó mucho dinero, pero fue una experiencia maravillosa. Pablo quiere regresar el próximo verano.`,
+    questions: [
+      { q: '¿Adónde viajó Pablo el verano pasado?', choices: ['A México', 'A España', 'A Puerto Rico', 'A Cuba'], answer: 'A Puerto Rico' },
+      { q: '¿Cuándo salió la familia de Nueva York?', choices: ['El primero de mayo', 'El quince de junio', 'El primero de junio', 'El quince de julio'], answer: 'El primero de junio' },
+      { q: '¿Qué visitaron en Puerto Rico?', choices: ['El museo de arte', 'El Viejo San Juan', 'La universidad', 'Un parque nacional'], answer: 'El Viejo San Juan' },
+      { q: '¿Qué hizo Pablo en la playa?', choices: ['Jugó fútbol y comió', 'Tomó fotos y nadó en el mar', 'Leyó libros y descansó', 'Compró souvenirs'], answer: 'Tomó fotos y nadó en el mar' },
+      { q: '¿Qué es el mofongo?', choices: ['Un deporte puertorriqueño', 'Una canción popular', 'Comida puertorriqueña', 'Un lugar histórico'], answer: 'Comida puertorriqueña' },
+      { q: '¿Qué compró Pablo en el mercado artesanal?', choices: ['Souvenirs para sus amigos', 'Una camiseta verde con la bandera de Puerto Rico', 'Comida y bebidas', 'Fotos del Viejo San Juan'], answer: 'Una camiseta verde con la bandera de Puerto Rico' },
+      { q: '¿Qué quiere hacer Pablo el próximo verano?', choices: ['Viajar a Cuba', 'Quedarse en Nueva York', 'Regresar a Puerto Rico', 'Ir a España'], answer: 'Regresar a Puerto Rico' },
+    ]
+  },
+  {
+    id: 8,
+    title: 'Elena y su rutina diaria',
+    modules: 'Módulos 2–4',
+    body: `Elena tiene veintidós años y es estudiante de enfermería. Vive con su familia en San Diego. Su rutina diaria es muy ocupada (busy) pero ella está contenta con su vida.
+
+Por la mañana, Elena se despierta a las seis. Desayuna con su familia y luego toma el autobús a la universidad. Tiene clases de ciencias, inglés médico y anatomía. Por la tarde, trabaja cuatro horas en un hospital como voluntaria.
+
+Cuando regresa a casa, cena con su familia y hace su tarea. Le gusta mucho cocinar, especialmente los viernes cuando prepara recetas (recipes) nuevas para toda la familia. Su sueño (dream) es ser enfermera pediatrica y trabajar con niños. Ella sabe que necesita estudiar mucho, pero está muy motivada.`,
+    questions: [
+      { q: '¿Qué estudia Elena?', choices: ['Biología', 'Enfermería', 'Medicina', 'Psicología'], answer: 'Enfermería' },
+      { q: '¿A qué hora se despierta Elena?', choices: ['A las cinco', 'A las seis', 'A las siete', 'A las ocho'], answer: 'A las seis' },
+      { q: '¿Cómo va Elena a la universidad?', choices: ['En carro', 'A pie', 'En bicicleta', 'En autobús'], answer: 'En autobús' },
+      { q: '¿Dónde trabaja Elena como voluntaria?', choices: ['En una escuela', 'En una clínica', 'En un hospital', 'En una farmacia'], answer: 'En un hospital' },
+      { q: '¿Cuántas horas trabaja Elena por la tarde?', choices: ['Dos horas', 'Tres horas', 'Cuatro horas', 'Cinco horas'], answer: 'Cuatro horas' },
+      { q: '¿Qué le gusta hacer a Elena, especialmente los viernes?', choices: ['Salir con amigos', 'Ver películas', 'Cocinar recetas nuevas', 'Estudiar en la biblioteca'], answer: 'Cocinar recetas nuevas' },
+      { q: '¿Cuál es el sueño de Elena?', choices: ['Ser médica', 'Ser enfermera pediátrica', 'Viajar por el mundo', 'Abrir un restaurante'], answer: 'Ser enfermera pediátrica' },
+    ]
+  },
+];
 
 // ─── FINAL EXAM QUESTION BANK (based on teacher's model test) ────────────────
 const finalExamQuestions = [
@@ -1164,9 +1354,9 @@ function selectMode(m) {
   if (m === 'finalExam') selectModule(0); // Final exam always uses all modules
   updateStartBtn();
 }
-function updateStartBtn() {
+function updateStartBtn(forceEnable) {
   const btn = document.getElementById('startBtn');
-  if (selectedModule !== null && selectedMode) {
+  if (forceEnable || (selectedModule !== null && selectedMode)) {
     btn.disabled = false;
     btn.textContent = '¡Vamos! Start Practicing →';
   }
@@ -1181,6 +1371,7 @@ function startSession() {
   else if (sessionMode === 'exam') startExam();
   else if (sessionMode === 'grammar') startGrammar();
   else if (sessionMode === 'finalExam') startFinalExam();
+  else if (sessionMode === 'reading') startComprehension();
 }
 function switchTab(tab) {
   const isPractice = tab === 'practice';
@@ -1579,6 +1770,57 @@ function showGrammarTopic(t) {
   }
   content.scrollIntoView({ behavior: 'smooth' });
 }
+// ─── READING COMPREHENSION ────────────────────────────────────────────────────
+let readingPassage = null, readingQIndex = 0, readingCorrect = 0, readingWrong = 0;
+function startComprehension() {
+  readingPassage = shuffle([...readingPassages])[0];
+  readingQIndex = 0; readingCorrect = 0; readingWrong = 0;
+  showScreen('reading');
+  document.getElementById('readingPassageTitle').textContent = readingPassage.title;
+  document.getElementById('readingPassageBody').textContent = readingPassage.body;
+  showReadingQuestion();
+}
+function showReadingQuestion() {
+  const qs = readingPassage.questions;
+  if (readingQIndex >= qs.length) { showResults(readingCorrect, qs.length); return; }
+  const q = qs[readingQIndex];
+  const total = qs.length;
+  document.getElementById('readingProgress').textContent = `Question ${readingQIndex+1} of ${total}`;
+  document.getElementById('readingScore').textContent = `✓ ${readingCorrect}  ✗ ${readingWrong}`;
+  document.getElementById('readingBar').style.width = `${(readingQIndex/total)*100}%`;
+  document.getElementById('readingQNum').textContent = `Pregunta ${readingQIndex+1}`;
+  document.getElementById('readingQText').textContent = q.q;
+  document.getElementById('readingFeedback').textContent = '';
+  document.getElementById('readingFeedback').className = 'feedback';
+  document.getElementById('readingNextBtn').style.display = 'none';
+  const body = document.getElementById('readingQBody');
+  body.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'choices';
+  shuffle([...q.choices]).forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectReadingChoice(btn, choice, q.answer, div);
+    div.appendChild(btn);
+  });
+  body.appendChild(div);
+}
+function selectReadingChoice(btn, choice, answer, container) {
+  container.querySelectorAll('.choice').forEach(b => b.style.pointerEvents = 'none');
+  const correct = choice === answer;
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) container.querySelectorAll('.choice').forEach(b => { if(b.textContent === answer) b.classList.add('correct'); });
+  const fb = document.getElementById('readingFeedback');
+  if (correct) { fb.textContent = '¡Correcto! 🎉'; fb.className = 'feedback good'; readingCorrect++; }
+  else { fb.innerHTML = `Not quite. The answer is: <b>${answer}</b>`; fb.className = 'feedback bad'; readingWrong++; }
+  document.getElementById('readingNextBtn').style.display = 'block';
+}
+function nextReadingQuestion() {
+  readingQIndex++;
+  showReadingQuestion();
+}
+
 function startGrammarQuiz(topicId) {
   let bank;
   if (topicId === 'preterito') {
